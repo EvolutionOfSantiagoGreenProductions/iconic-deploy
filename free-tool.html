@@ -45,7 +45,7 @@ const WATERMARK = "\n\n— Generated via iCONiCbyAESGP Free Tier | Upgrade at iC
 function loadPackets(){try{const r=localStorage.getItem(STORAGE_KEY);if(r)return JSON.parse(r);}catch(_){}return[];}
 function savePackets(p){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(p));return true;}catch(e){return false;}}
 function loadFreeUses(){try{return parseInt(localStorage.getItem(FREE_USES_KEY)||"0",10);}catch(_){return 0;}}
-function saveFreeUses(n){try{localStorage.setItem(FREE_USES_KEY,String(n));}catch(_){}}
+function saveFreeUses(n){try{localStorage.setItem(FREE_USES_KEY,String(n));}catch(_){} }
 
 const ROYALTY_STREAMS=[
   {id:1, name:"Songwriter Performance",        org:"ASCAP or BMI",               delay:"6–9 months",  notes:"Register as writer. Pick one PRO only."},
@@ -75,9 +75,9 @@ const PLATFORMS=[
 
 function robustParseJSON(raw){
   let c=raw.replace(/^```(?:json)?\s*/im,"").replace(/\s*```\s*$/m,"").trim();
-  try{return JSON.parse(c);}catch(_){}
+  try{return JSON.parse(c);}catch(_){ }
   const s=c.indexOf("{"),e=c.lastIndexOf("}");
-  if(s!==-1&&e>s){const sl=c.slice(s,e+1);try{return JSON.parse(sl);}catch(_){}}
+  if(s!==-1&&e>s){const sl=c.slice(s,e+1);try{return JSON.parse(sl);}catch(_){} }
   return extractFieldsSafely(c);
 }
 
@@ -91,12 +91,12 @@ function extractFieldsSafely(raw){
     duration:grab("duration"),catalogType:grab("catalogType"),
     aiInvolvement:grab("aiInvolvement"),instruments:grabArr("instruments"),
     songStructure:grab("songStructure"),brandingElement:grab("brandingElement"),
-    ascap_writer:{workTitle:title,alternativeTitles:[],workType:"Musical Work",classification:"Popular",instrumentation:"Instrumental",timing:grab("duration"),writerName:PRODUCER.legalName,writerRole:"Composer",writerShare:"50%",iswc:"Leave blank — ASCAP auto-assigns",releaseStatus:"Unpublished",aiDisclosure:"AI-assisted production under human creative direction by "+PRODUCER.legalName,notes:""},
+    ascap_writer:{workTitle:title,alternativeTitles:[],workType:"Musical Work",classification:"Popular",instrumentation:"Instrumental",timing:grab("duration"),writerName:PRODUCER.legalName,writerRole:["Composer","Writer"].join(", "),writerShare:"50%",iswc:"TBD",releaseStatus:"Published / Pending",aiDisclosure:"AI-assisted elements disclosed as required.",notes:""},
     ascap_publisher:{publisherName:PRODUCER.publisher,publisherShare:"50%",publisherRole:"Original Publisher",linkedWriter:PRODUCER.legalName,workTitle:title,notes:""},
-    copyright_gov:{workType:"Literary Work (Production Score)",title:`${title} — Production Score`,author:PRODUCER.legalName,yearOfCreation:yr,yearOfPublication:"Leave blank if unpublished",nation:"United States",claimant:PRODUCER.legalName,rightsAndPermissions:PRODUCER.publisher,description:"Original music production score and compositional blueprint",formType:"Form CO — Literary Work",fee:"$65",filingNotes:"File as collection if registering multiple scores"},
-    mlc:{workTitle:title,workType:"Musical Composition",writers:[{name:PRODUCER.legalName,role:"Composer",share:"50%"}],publishers:[{name:PRODUCER.publisher,share:"50%"}],isrc:"Obtain from DistroKid after distribution",iswc:"Obtain from ASCAP after registration",genres:grabArr("genres"),notes:"Registration is FREE at themlc.com"},
-    distrokid:{trackTitle:title,artist:PRODUCER.name,label:PRODUCER.publisher,genre:grab("genre"),subgenre:grab("subgenre"),releaseDate:"Set your preferred date",language:"English",explicit:"No",contentId:"Enable — Yes",upcNote:"DistroKid auto-assigns",isrcNote:"DistroKid auto-assigns — SAVE immediately for MLC + SoundExchange",metadataNotes:""},
-    soundexchange:{soundRecordingTitle:title,featuredArtist:PRODUCER.name,labelName:PRODUCER.publisher,releaseYear:yr,isrc:"Add after DistroKid assigns it",registrationNote:"CRITICAL: Register TWICE — Featured Artist AND Sound Recording Copyright Owner.",notes:"Free at soundexchange.com"},
+    copyright_gov:{workType:"Literary Work (Production Score)",title:`${title} — Production Score`,author:PRODUCER.legalName,yearOfCreation:yr,yearOfPublication:"Leave blank if unpublished",nation:"United States",claimant:PRODUCER.legalName,rightsAndPermissions:"Santiago Green / iCONiCbyAESGP",description:"Original production score and composition for track.",formType:"Form CO",fee:"See current filing fee",filingNotes:"Submit with production score or detailed description."},
+    mlc:{workTitle:title,workType:"Musical Composition",writers:[{name:PRODUCER.legalName,role:"Composer",share:"50%"}],publishers:[{name:PRODUCER.publisher,share:"50%"}],isrc:"Obtain from DistroKid after upload",iswc:"TBD",genres:[grab("genre")].filter(Boolean),notes:""},
+    distrokid:{trackTitle:title,artist:PRODUCER.name,label:PRODUCER.publisher,genre:grab("genre"),subgenre:grab("subgenre"),releaseDate:"Set your preferred date",language:"English",explicit:"No",contentId:"Add after upload",upcNote:"Not required for digital only",isrcNote:"Generate from DistroKid or distributor",metadataNotes:"Complete title, genre, release date, and ISRC metadata."},
+    soundexchange:{soundRecordingTitle:title,featuredArtist:PRODUCER.name,labelName:PRODUCER.publisher,releaseYear:yr,isrc:"Add after DistroKid assigns it",registrationNote:"CRITICAL: Register TWICE — Featured Artist AND Rights Owner.",notes:""},
     royaltyEligibility:{eligible:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],blocked:[],notes:""},
     auditChecklist:[
       {item:"Production score uploaded",status:"pass",detail:"Score received and analyzed."},
@@ -108,32 +108,32 @@ function extractFieldsSafely(raw){
       {item:"MLC registration required",status:"warn",detail:"Register FREE at themlc.com — separate from PRO and distributor."},
       {item:"SoundExchange dual registration",status:"warn",detail:"Register TWICE at soundexchange.com — Featured Artist AND Rights Owner."},
     ],
-    authorshipStatement:`AUTHORSHIP STATEMENT — ${title}\n\nI, ${PRODUCER.legalName}, hereby affirm that I am the sole author of the original musical composition titled "${title}," including all elements of its instrumental arrangement, production structure, sonic palette, mix philosophy, and dynamic narrative, as documented in the accompanying production score.\n\nProducer: ${PRODUCER.name}\nPublishing Entity: ${PRODUCER.publisher}\nPRO: ${PRODUCER.pro}\nYouTube: ${PRODUCER.youtube}\nDate: ${new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}${WATERMARK}`,
-    timestampDocument:`TIMESTAMPED CREATION RECORD\n${"=".repeat(36)}\nTrack Title:  ${title}\nProducer:     ${PRODUCER.name}\nLegal Name:   ${PRODUCER.legalName}\nPublisher:    ${PRODUCER.publisher}\nPRO:          ${PRODUCER.pro}\nYouTube:      ${PRODUCER.youtube}\nDate Created: ${new Date().toISOString()}\n${"=".repeat(36)}\nSave as PDF → email to yourself → store in Google Drive.${WATERMARK}`,
+    authorshipStatement:`AUTHORSHIP STATEMENT — ${title}\n\nI, ${PRODUCER.legalName}, hereby affirm that I am the sole author of the original musical composition titled "${title}," including all underlying melodic, harmonic, rhythmic, and lyrical material embodied in the work. I confirm that I own the rights to the composition and authorize its registration, administration, and collection of associated royalties through iCONiCbyAESGP and any applicable performing rights organization, publisher, distributor, or royalty collection body.\n\nThis statement is made in connection with the registration of this work and is true to the best of my knowledge and belief.\n\n— Generated via iCONiCbyAESGP Free Tier | Upgrade at iCONiCbyAESGP.com/members/`,
+    timestampDocument:`TIMESTAMPED CREATION RECORD\n${"=".repeat(36)}\nTrack Title:  ${title}\nProducer:     ${PRODUCER.name}\nLegal Name:   ${PRODUCER.legalName}\nPublisher:    ${PRODUCER.publisher}\nCatalog Type: ${grab("catalogType")||"Unspecified"}\nCreated At:   ${new Date().toISOString()}\nStatus:      Registration packet drafted and retained for rights administration.\n\nNotes: This document confirms the creation and filing preparation of the referenced musical work for royalty and registration administration.\n\n— Generated via iCONiCbyAESGP Free Tier | Upgrade at iCONiCbyAESGP.com/members/`,
   };
 }
 
 const S={
   root:{fontFamily:"'Archivo',system-ui,sans-serif",background:BRAND.bg,minHeight:"100vh",color:BRAND.text,fontSize:14},
-  header:{background:`linear-gradient(135deg,${BRAND.bg},#0f0a18,${BRAND.bg})`,borderBottom:`2px solid ${BRAND.accent}`,padding:"14px 24px",display:"flex",alignItems:"center",gap:14,position:"sticky",top:0,zIndex:100},
+  header:{background:`linear-gradient(135deg,${BRAND.bg},#0f0a18,${BRAND.bg})`,borderBottom:`2px solid ${BRAND.accent}`,padding:"14px 24px",display:"flex",alignItems:"center",gap:14,position:"sticky",top:0,zIndex:10},
   panel:{background:BRAND.surf,border:`1px solid ${BRAND.border}`,borderRadius:10,overflow:"hidden",marginBottom:14},
   panelHead:{padding:"12px 18px",background:"rgba(201,153,46,0.06)",borderBottom:`1px solid ${BRAND.border}`,display:"flex",alignItems:"center",gap:10},
   panelBody:{padding:"18px"},
   lbl:{fontSize:10,letterSpacing:2,textTransform:"uppercase",fontFamily:"monospace",color:BRAND.accent,marginBottom:5,display:"block"},
-  textarea:{width:"100%",padding:"12px 14px",background:BRAND.bg,border:`1px solid ${BRAND.border}`,borderRadius:6,color:BRAND.text,fontSize:12,outline:"none",fontFamily:"monospace",boxSizing:"border-box",resize:"vertical",lineHeight:1.7},
-  btn:(color=BRAND.accent,bg=`rgba(201,153,46,0.15)`)=>({padding:"9px 18px",borderRadius:7,background:bg,border:`1px solid ${color}`,color,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",letterSpacing:1,transition:"all .15s",display:"inline-flex",alignItems:"center",gap:5}),
-  copyBox:{background:BRAND.bg,border:`1px solid ${BRAND.border}`,borderRadius:6,padding:"12px 46px 12px 14px",fontSize:12,fontFamily:"monospace",lineHeight:1.75,color:"#d0c8b8",whiteSpace:"pre-wrap",wordBreak:"break-word",position:"relative"},
+  textarea:{width:"100%",padding:"12px 14px",background:BRAND.bg,border:`1px solid ${BRAND.border}`,borderRadius:6,color:BRAND.text,fontSize:12,outline:"none",fontFamily:"monospace",boxSizing:"border-box"},
+  btn:(color=BRAND.accent,bg=`rgba(201,153,46,0.15)`)=>({padding:"9px 18px",borderRadius:7,background:bg,border:`1px solid ${color}`,color,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}),
+  copyBox:{background:BRAND.bg,border:`1px solid ${BRAND.border}`,borderRadius:6,padding:"12px 46px 12px 14px",fontSize:12,fontFamily:"monospace",lineHeight:1.75,color:"#d0c8b8",whiteSpace:"pre-wrap",position:"relative"},
   badge:(color)=>({display:"inline-block",fontSize:10,padding:"2px 8px",borderRadius:10,fontFamily:"monospace",letterSpacing:1,border:`1px solid ${color}40`,background:`${color}18`,color}),
-  dropzone:(active)=>({border:`2px dashed ${active?BRAND.accent:BRAND.border}`,borderRadius:10,padding:"28px 20px",textAlign:"center",cursor:"pointer",background:active?"rgba(201,153,46,0.05)":"rgba(0,0,0,0.15)",transition:"all .2s"}),
-  tab:(active)=>({padding:"7px 14px",borderRadius:6,background:active?"rgba(201,153,46,0.15)":"transparent",border:`1px solid ${active?"rgba(201,153,46,0.5)":"transparent"}`,color:active?BRAND.accentLt:"#5a4a35",fontSize:10,fontFamily:"monospace",letterSpacing:1,cursor:"pointer",transition:"all .15s",textTransform:"uppercase"}),
+  dropzone:(active)=>({border:`2px dashed ${active?BRAND.accent:BRAND.border}`,borderRadius:10,padding:"28px 20px",textAlign:"center",cursor:"pointer",background:active?"rgba(201,153,46,0.05)":"rgba(0,0,0,0.15)"}),
+  tab:(active)=>({padding:"7px 14px",borderRadius:6,background:active?"rgba(201,153,46,0.15)":"transparent",border:`1px solid ${active?"rgba(201,153,46,0.5)":"transparent"}`,color:active?BRAND.accentLt:BRAND.muted,cursor:"pointer"}),
 };
 
 const readFileAsText=(file)=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsText(file);});
-const getAudioDuration=(file)=>new Promise((res)=>{const url=URL.createObjectURL(file);const a=new Audio(url);a.addEventListener("loadedmetadata",()=>{URL.revokeObjectURL(url);const m=Math.floor(a.duration/60);const s=Math.floor(a.duration%60).toString().padStart(2,"0");res(`${m}:${s}`);});a.addEventListener("error",()=>res("Unknown"));});
+const getAudioDuration=(file)=>new Promise((res)=>{const url=URL.createObjectURL(file);const a=new Audio(url);a.addEventListener("loadedmetadata",()=>{URL.revokeObjectURL(url);const m=Math.floor(a.duration);res(m?`${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`:"0:00");});a.addEventListener("error",()=>{URL.revokeObjectURL(url);res("0:00");});});
 
 function AEMonogram({size=42}){
   return(
-    <div style={{width:size,height:size,borderRadius:"50%",flexShrink:0,background:`linear-gradient(${BRAND.bg},${BRAND.bg}) padding-box, ${BRAND.goldGrd} border-box`,border:"2px solid transparent",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 0 18px rgba(212,164,55,0.2)`,position:"relative"}}>
+    <div style={{width:size,height:size,borderRadius:"50%",flexShrink:0,background:`linear-gradient(${BRAND.bg},${BRAND.bg}) padding-box, ${BRAND.goldGrd} border-box`,border:"2px solid transparent",position:"relative",display:"grid",placeItems:"center"}}>
       <div style={{position:"absolute",inset:4,borderRadius:"50%",border:`1px solid rgba(212,164,55,0.2)`}}/>
       <svg width={size*0.5} height={size*0.5} viewBox="0 0 24 24" fill="none">
         <text x="12" y="17" textAnchor="middle" fontFamily="Cinzel,Georgia,serif" fontSize="13" fontWeight="700" fill="url(#ag)" letterSpacing="-1">AE</text>
@@ -145,13 +145,12 @@ function AEMonogram({size=42}){
 
 function CopyButton({text,style={}}){
   const[copied,setCopied]=useState(false);
+  const fallbackCopy=(t)=>{const ta=document.createElement("textarea");ta.value=t||"";ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");}catch(_){ }ta.remove();};
   const copy=()=>{
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text||"").then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);}).catch(()=>{fallbackCopy(text);setCopied(true);setTimeout(()=>setCopied(false),2000);});
-    } else {fallbackCopy(text);setCopied(true);setTimeout(()=>setCopied(false),2000);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text||"").then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);}).catch(()=>{fallbackCopy(text);setCopied(true);setTimeout(()=>setCopied(false),2000);});}
+    else{fallbackCopy(text);setCopied(true);setTimeout(()=>setCopied(false),2000);}
   };
-  const fallbackCopy=(t)=>{const ta=document.createElement("textarea");ta.value=t||"";ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");}catch(_){}document.body.removeChild(ta);};
-  return(<button onClick={copy} style={{position:"absolute",top:8,right:8,padding:"3px 10px",borderRadius:5,fontSize:10,cursor:"pointer",background:copied?"rgba(68,201,122,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${copied?"#44C97A":"#333"}`,color:copied?"#44C97A":"#666",fontFamily:"monospace",...style}}>{copied?"✓ Copied":"Copy"}</button>);
+  return(<button onClick={copy} style={{position:"absolute",top:8,right:8,padding:"3px 10px",borderRadius:5,fontSize:10,cursor:"pointer",background:copied?"rgba(68,201,122,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${copied?"rgba(68,201,122,0.5)":"rgba(255,255,255,0.12)"}",color:BRAND.text}}>{copied?"Copied":"Copy"}</button>);
 }
 
 function FieldBlock({label,value}){
@@ -160,40 +159,17 @@ function FieldBlock({label,value}){
   return(<div style={{marginBottom:13}}><span style={S.lbl}>{label}</span><div style={S.copyBox}>{str}<CopyButton text={str}/></div></div>);
 }
 
-function PlatformPanel({title,subtitle,color,fields}){
-  return(<div style={S.panel}><div style={{...S.panelHead,borderBottom:`2px solid ${color}35`}}><div><div style={{fontWeight:700,fontSize:14,color:BRAND.text,fontFamily:"'Cinzel',Georgia,serif"}}>{title}</div><div style={{fontSize:11,color:BRAND.muted,marginTop:2}}>{subtitle}</div></div></div><div style={S.panelBody}>{fields.map(([lbl,val])=>val?<FieldBlock key={lbl} label={lbl} value={val}/>:null)}</div></div>);
-}
-
-// PAYWALL OVERLAY
 function PaywallOverlay(){
   return(
     <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(7,5,10,0.97)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
       <div style={{maxWidth:480,width:"100%",textAlign:"center"}}>
         <AEMonogram size={72}/>
-        <div style={{fontFamily:"'Yellowtail',cursive",fontSize:16,color:BRAND.accent,marginTop:18,marginBottom:6}}>
-          An Evolution Of Santiago Green Production
-        </div>
-        <h2 style={{fontFamily:"'Cinzel',Georgia,serif",fontSize:22,fontWeight:700,background:BRAND.goldGrd,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginBottom:10,lineHeight:1.2}}>
-          You've Used Your 5 Free Registrations
-        </h2>
-        <p style={{fontSize:13,color:BRAND.muted,lineHeight:1.7,marginBottom:28,maxWidth:360,margin:"0 auto 28px"}}>
-          You've hit the free tier limit. Unlock unlimited registration packets, full export, no watermarks, and the complete Producer Suite.
-        </p>
-        <a href="https://gumroad.com" target="_blank" rel="noopener" style={{
-          display:"inline-block",fontFamily:"'Cinzel',Georgia,serif",fontSize:13,fontWeight:700,
-          letterSpacing:".1em",textTransform:"uppercase",padding:"16px 36px",borderRadius:10,
-          background:BRAND.goldGrd,color:BRAND.bg,textDecoration:"none",
-          boxShadow:"0 0 32px rgba(212,164,55,0.35)",marginBottom:16,
-        }}>
-          Get Full Access — $14.99/mo
-        </a>
-        <div style={{fontSize:11,color:BRAND.muted}}>
-          Already a member?{" "}
-          <a href="https://iCONiCbyAESGP.com/members/" target="_blank" rel="noopener" style={{color:BRAND.accent,textDecoration:"none"}}>Visit iCONiCbyAESGP.com/members/</a>
-        </div>
-        <div style={{marginTop:24,fontSize:10,color:BRAND.dim,fontFamily:"monospace",letterSpacing:1}}>
-          FREE TIER — 5 / 5 PACKETS USED
-        </div>
+        <div style={{fontFamily:"'Yellowtail',cursive",fontSize:16,color:BRAND.accent,marginTop:18,marginBottom:6}}>An Evolution Of Santiago Green Production</div>
+        <h2 style={{fontFamily:"'Cinzel',Georgia,serif",fontSize:22,fontWeight:700,background:BRAND.goldGrd,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginBottom:10,lineHeight:1.2}}>You've Used Your 5 Free Registrations</h2>
+        <p style={{fontSize:13,color:BRAND.muted,lineHeight:1.7,marginBottom:28,maxWidth:360,margin:"0 auto 28px"}}>You've hit the free tier limit. Unlock unlimited registration packets, full export, no watermarks, and the complete Producer Suite.</p>
+        <a href="https://evolutionary468.gumroad.com/l/cbjii" target="_blank" rel="noopener" style={{display:"inline-block",fontFamily:"'Cinzel',Georgia,serif",fontSize:13,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",padding:"16px 36px",borderRadius:10,background:BRAND.goldGrd,color:BRAND.bg,textDecoration:"none",boxShadow:"0 0 32px rgba(212,164,55,0.35)",marginBottom:16}}>Get Full Access — $14.99/mo</a>
+        <div style={{fontSize:11,color:BRAND.muted}}>Already a member? <a href="https://iCONiCbyAESGP.com/members/" target="_blank" rel="noopener" style={{color:BRAND.accent,textDecoration:"none"}}>Visit iCONiCbyAESGP.com/members/</a></div>
+        <div style={{marginTop:24,fontSize:10,color:BRAND.dim,fontFamily:"monospace",letterSpacing:1}}>FREE TIER — 5 / 5 PACKETS USED</div>
       </div>
     </div>
   );
@@ -214,9 +190,9 @@ function ApiKeySetup({onSave}){
         <div style={S.panelBody}>
           <p style={{fontSize:12,color:BRAND.muted,marginBottom:16,lineHeight:1.7}}>Your key is saved only in this browser — never sent anywhere except Anthropic's servers.</p>
           <span style={S.lbl}>API Key</span>
-          <input type="password" placeholder="sk-ant-api03-..." value={key} onChange={e=>setKey(e.target.value)} onKeyDown={e=>e.key==="Enter"&&key.startsWith("sk-ant-")&&onSave(key)} style={{marginBottom:12,letterSpacing:key?"2px":"normal"}}/>
+          <input type="password" placeholder="sk-ant-api03-..." value={key} onChange={e=>setKey(e.target.value)} onKeyDown={e=>e.key==="Enter"&&key.startsWith("sk-ant-")&&onSave(key)} style={{marginBottom:14}}/>
           <p style={{fontSize:11,color:BRAND.muted,marginBottom:16}}>Get your key at <a href="https://console.anthropic.com/settings/keys" target="_blank" style={{color:BRAND.blue}}>console.anthropic.com/settings/keys</a></p>
-          <button onClick={()=>key.startsWith("sk-ant-")&&onSave(key)} disabled={!key.startsWith("sk-ant-")} style={{...S.btn(),width:"100%",justifyContent:"center",padding:"11px 0",opacity:key.startsWith("sk-ant-")?1:0.4,cursor:key.startsWith("sk-ant-")?"pointer":"not-allowed"}}>Enter Studio →</button>
+          <button onClick={()=>key.startsWith("sk-ant-")&&onSave(key)} disabled={!key.startsWith("sk-ant-")} style={{...S.btn(),width:"100%",justifyContent:"center",padding:"11px 0",opacity:key.startsWith("sk-ant-")?1:0.5}}>Save API Key</button>
         </div>
       </div>
     </div>
@@ -237,11 +213,11 @@ function TitleEditor({current,bpm,keyVal,genre,year,onSave,onCancel}){
         {[{label:"🔥 Beat Name",val:beatName,set:setBeatName,ph:"e.g. Midnight Hustle"},{label:"BPM",val:bpmV,set:setBpmV,ph:"e.g. 140"},{label:"Key",val:keyV,set:setKeyV,ph:"e.g. Gm"},{label:"Genre",val:genreV,set:setGenreV,ph:"e.g. Trap"}].map(f=>(
           <div key={f.label}>
             <div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>{f.label}</div>
-            <input value={f.val} onChange={e=>f.set(e.target.value)} placeholder={f.ph} style={fi} onFocus={e=>e.target.style.borderColor=BRAND.accent} onBlur={e=>e.target.style.borderColor=BRAND.border2}/>
+            <input value={f.val} onChange={e=>f.set(e.target.value)} placeholder={f.ph} style={fi}/>
           </div>
         ))}
       </div>
-      <div style={{fontSize:11,color:BRAND.accent,background:"rgba(201,153,46,0.08)",border:`1px solid rgba(201,153,46,0.2)`,borderRadius:6,padding:"8px 10px",fontFamily:"monospace",marginBottom:10,lineHeight:1.4,wordBreak:"break-all",position:"relative"}}>
+      <div style={{fontSize:11,color:BRAND.accent,background:"rgba(201,153,46,0.08)",border:`1px solid rgba(201,153,46,0.2)`,borderRadius:6,padding:"8px 10px",fontFamily:"monospace",marginBottom:10,lineHeight:1.5,position:"relative"}}>
         <span style={{color:BRAND.muted,marginRight:6}}>Preview:</span>{preview}<CopyButton text={preview}/>
       </div>
       <div style={{display:"flex",gap:8}}>
@@ -262,11 +238,9 @@ function Library({packets,onSelect,onDelete,onNew,freeUses}){
           <div style={{fontSize:20,fontWeight:700,color:BRAND.accentLt,fontFamily:"'Cinzel',Georgia,serif"}}>{packets.length} Registration {packets.length===1?"Record":"Records"}</div>
         </div>
         <div style={{display:"flex",gap:10,alignItems:"center"}}>
-          <div style={{fontSize:11,fontFamily:"monospace",color:remaining>0?BRAND.accent:BRAND.red,background:remaining>0?"rgba(201,153,46,0.1)":"rgba(224,68,68,0.1)",border:`1px solid ${remaining>0?"rgba(201,153,46,0.3)":"rgba(224,68,68,0.3)"}`,borderRadius:20,padding:"4px 12px"}}>
-            {freeUses} / {FREE_LIMIT} free packets used{remaining>0?` · ${remaining} left`:" · LIMIT REACHED"}
-          </div>
+          <div style={{fontSize:11,fontFamily:"monospace",color:remaining>0?BRAND.accent:BRAND.red,background:remaining>0?"rgba(201,153,46,0.1)":"rgba(224,68,68,0.1)",border:`1px solid ${remaining>0?"rgba(201,153,46,0.35)":"rgba(224,68,68,0.35)"}",padding:"5px 10px",borderRadius:999}}>{freeUses} / {FREE_LIMIT} free packets used{remaining>0?` · ${remaining} left`:" · LIMIT REACHED"}</div>
           {remaining>0&&<button onClick={onNew} style={S.btn()}>+ New Track</button>}
-          {remaining===0&&<a href="https://gumroad.com" target="_blank" rel="noopener" style={{...S.btn(BRAND.gold2,`rgba(212,164,55,0.15)`),textDecoration:"none"}}>🔓 Upgrade $14.99/mo</a>}
+          {remaining===0&&<a href="https://evolutionary468.gumroad.com/l/cbjii" target="_blank" rel="noopener" style={{...S.btn(BRAND.gold2,`rgba(212,164,55,0.15)`),textDecoration:"none"}}>🔓 Upgrade $14.99/mo</a>}
         </div>
       </div>
       {packets.length===0?(
@@ -297,10 +271,10 @@ function Library({packets,onSelect,onDelete,onNew,freeUses}){
                   </div>
                 </div>
                 <div style={{padding:"10px 16px",display:"flex",alignItems:"center",gap:16}} onClick={()=>onSelect(p)}>
-                  <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:700,color:BRAND.green,lineHeight:1}}>{eligible}</div><div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase"}}>royalties</div></div>
-                  <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:700,color:BRAND.blue,lineHeight:1}}>{pass}</div><div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase"}}>audit pass</div></div>
+                  <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:700,color:BRAND.green,lineHeight:1}}>{eligible}</div><div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase"}}>Eligible</div></div>
+                  <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:700,color:BRAND.blue,lineHeight:1}}>{pass}</div><div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase"}}>Pass</div></div>
                   <div style={{flex:1}}><div style={{fontSize:10,color:BRAND.muted,fontFamily:"monospace"}}>{new Date(p.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</div></div>
-                  <button onClick={e=>{e.stopPropagation();if(window.confirm(`Delete "${p.data?.trackTitle}"?`))onDelete(p.id);}} style={{...S.btn(BRAND.red,"transparent"),padding:"4px 10px",fontSize:10}}>Delete</button>
+                  <button onClick={e=>{e.stopPropagation();if(window.confirm(`Delete "${p.data?.trackTitle}"?`))onDelete(p.id);}} style={{...S.btn(BRAND.red,"transparent"),padding:"4px 10px",fontSize:9}}>Delete</button>
                 </div>
               </div>
             );
@@ -311,7 +285,6 @@ function Library({packets,onSelect,onDelete,onNew,freeUses}){
   );
 }
 
-// UPLOAD FORM
 function UploadForm({hasPackets,onComplete,onCancel,apiKey,freeUses}){
   const[scoreText,setScoreText]=useState("");
   const[audioFile,setAudioFile]=useState(null);
@@ -320,7 +293,6 @@ function UploadForm({hasPackets,onComplete,onCancel,apiKey,freeUses}){
   const[analyzing,setAnalyzing]=useState(false);
   const[error,setError]=useState("");
   const[dragOver,setDragOver]=useState(false);
-  const[step,setStep]=useState(1);
   const fileRef=useRef();
 
   const handleAudio=useCallback(async(file)=>{
@@ -344,22 +316,12 @@ function UploadForm({hasPackets,onComplete,onCancel,apiKey,freeUses}){
   },[handleAudio,handleScoreFile]);
 
   const analyze=async()=>{
-    // FREE TIER GATE — check before making any API call
-    if(freeUses>=FREE_LIMIT){
-      setError("Free tier limit reached. Please upgrade to continue.");
-      return;
-    }
+    if(freeUses>=FREE_LIMIT){setError("Free tier limit reached. Please upgrade to continue.");return;}
     if(!scoreText.trim()&&!audioFile){setError("Please paste a production score or upload a file.");return;}
     setAnalyzing(true);setError("");
 
-    const catalogLabels={
-      instrumental:"Instrumental Beat",
-      audio_fossil:"Audio Fossils (Archival)",
-      sonic_crossover:"Sonic Crossover (Genre-Blend)",
-      script:"Script / Spoken Word",
-    };
+    const catalogLabels={instrumental:"Instrumental Beat",audio_fossil:"Audio Fossils (Archival)",sonic_crossover:"Sonic Crossover (Genre-Blend)",script:"Script / Spoken Word"};
     const scoreInput=scoreText.trim()||`[Audio file uploaded: ${audioFile?.name||"unknown"}${manualDur?` | Duration: ${manualDur}`:""}]`;
-
     const prompt=`You are a music rights registration expert for iCONiCbyAESGP. Analyze this production score/description and return a JSON object (no markdown, no code fences) with these exact keys:
 
 trackTitle, genre, subgenre, bpm, key, duration, catalogType, aiInvolvement, instruments (array), songStructure, brandingElement,
@@ -392,36 +354,16 @@ ${scoreInput.slice(0,8000)}
 Return ONLY valid JSON, no other text.`;
 
     try{
-      const resp=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",
-        headers:{"x-api-key":apiKey,"anthropic-version":"2023-06-01","content-type":"application/json"},
-        body:JSON.stringify({model:"claude-opus-4-5",max_tokens:4000,messages:[{role:"user",content:prompt}]}),
-      });
+      const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"x-api-key":apiKey,"anthropic-version":"2023-06-01","content-type":"application/json"},body:JSON.stringify({model:"claude-opus-4-5",max_tokens:4000,messages:[{role:"user",content:prompt}]})});
       if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err?.error?.message||`API error ${resp.status}`);}
       const data=await resp.json();
       const raw=data.content?.[0]?.text||"";
-      let parsed;
-      try{parsed=robustParseJSON(raw);}catch(pe){parsed=extractFieldsSafely(scoreInput);}
-
-      // Ensure watermark in outputs
-      if(parsed.authorshipStatement&&!parsed.authorshipStatement.includes("iCONiCbyAESGP Free Tier")){
-        parsed.authorshipStatement+=WATERMARK;
-      }
-      if(parsed.timestampDocument&&!parsed.timestampDocument.includes("iCONiCbyAESGP Free Tier")){
-        parsed.timestampDocument+=WATERMARK;
-      }
-
-      const packet={
-        id:Date.now().toString(36)+Math.random().toString(36).slice(2),
-        createdAt:new Date().toISOString(),
-        catalogTypeKey:catalogType,
-        data:parsed,
-      };
+      let parsed; try{parsed=robustParseJSON(raw);}catch(pe){parsed=extractFieldsSafely(scoreInput);}
+      if(parsed.authorshipStatement&&!parsed.authorshipStatement.includes("iCONiCbyAESGP Free Tier")){parsed.authorshipStatement+=WATERMARK;}
+      if(parsed.timestampDocument&&!parsed.timestampDocument.includes("iCONiCbyAESGP Free Tier")){parsed.timestampDocument+=WATERMARK;}
+      const packet={id:Date.now().toString(36)+Math.random().toString(36).slice(2),createdAt:new Date().toISOString(),catalogTypeKey:catalogType,data:parsed};
       onComplete(packet);
-    }catch(err){
-      setError(err.message||"Analysis failed. Check your API key and try again.");
-      setAnalyzing(false);
-    }
+    }catch(err){setError(err.message||"Analysis failed. Check your API key and try again.");setAnalyzing(false);}
   };
 
   const catalogOptions=[
@@ -439,17 +381,13 @@ Return ONLY valid JSON, no other text.`;
           <div style={{fontFamily:"monospace",fontSize:10,letterSpacing:2,color:BRAND.accent,textTransform:"uppercase",marginBottom:2}}>New Registration</div>
           <div style={{fontSize:18,fontWeight:700,color:BRAND.accentLt,fontFamily:"'Cinzel',Georgia,serif"}}>Analyze Track</div>
         </div>
-        <div style={{marginLeft:"auto",fontSize:11,fontFamily:"monospace",color:freeUses<FREE_LIMIT?BRAND.accent:BRAND.red}}>
-          {FREE_LIMIT-freeUses} packet{FREE_LIMIT-freeUses!==1?"s":""} remaining
-        </div>
+        <div style={{marginLeft:"auto",fontSize:11,fontFamily:"monospace",color:freeUses<FREE_LIMIT?BRAND.accent:BRAND.red}}>{FREE_LIMIT-freeUses} packet{FREE_LIMIT-freeUses!==1?"s":""} remaining</div>
       </div>
-
-      {/* Step 1: Catalog Type */}
       <div style={S.panel}>
         <div style={S.panelHead}><span style={{fontFamily:"monospace",fontSize:10,color:BRAND.accent,letterSpacing:2}}>STEP 1</span><span style={{fontWeight:600,marginLeft:8}}>Catalog Type</span></div>
         <div style={{...S.panelBody,display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:10}}>
           {catalogOptions.map(opt=>(
-            <button key={opt.id} onClick={()=>setCatalogType(opt.id)} style={{padding:"12px",borderRadius:8,background:catalogType===opt.id?"rgba(201,153,46,0.12)":"rgba(0,0,0,0.2)",border:`1px solid ${catalogType===opt.id?BRAND.accent:BRAND.border}`,color:catalogType===opt.id?BRAND.accentLt:BRAND.muted,cursor:"pointer",textAlign:"left",transition:"all .15s"}}>
+            <button key={opt.id} onClick={()=>setCatalogType(opt.id)} style={{padding:"12px",borderRadius:8,background:catalogType===opt.id?"rgba(201,153,46,0.12)":"rgba(0,0,0,0.2)",border:`1px solid ${catalogType===opt.id?"rgba(201,153,46,0.5)":"rgba(255,255,255,0.06)"}",color:BRAND.text,textAlign:"left",cursor:"pointer"}}>
               <div style={{fontSize:20,marginBottom:6}}>{opt.icon}</div>
               <div style={{fontSize:11,fontWeight:600,marginBottom:3}}>{opt.label}</div>
               <div style={{fontSize:10,color:BRAND.muted,lineHeight:1.4}}>{opt.desc}</div>
@@ -457,18 +395,10 @@ Return ONLY valid JSON, no other text.`;
           ))}
         </div>
       </div>
-
-      {/* Step 2: Upload */}
       <div style={S.panel}>
-        <div style={S.panelHead}><span style={{fontFamily:"monospace",fontSize:10,color:BRAND.accent,letterSpacing:2}}>STEP 2</span><span style={{fontWeight:600,marginLeft:8}}>Production Score or Audio</span></div>
+        <div style={S.panelHead}><span style={{fontFamily:"monospace",fontSize:10,color:BRAND.accent,letterSpacing:2}}>STEP 2</span><span style={{fontWeight:600,marginLeft:8}}>Production Score or Audio Upload</span></div>
         <div style={S.panelBody}>
-          <div
-            style={S.dropzone(dragOver)}
-            onClick={()=>fileRef.current?.click()}
-            onDragOver={e=>{e.preventDefault();setDragOver(true);}}
-            onDragLeave={()=>setDragOver(false)}
-            onDrop={handleDrop}
-          >
+          <div style={S.dropzone(dragOver)} onClick={()=>fileRef.current?.click()} onDragOver={e=>{e.preventDefault();setDragOver(true);}} onDragLeave={()=>setDragOver(false)} onDrop={handleDrop}>
             <input ref={fileRef} type="file" accept=".txt,.md,.pdf,.mp3,.wav,.aif,.aiff,.flac,audio/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f){if(f.type.startsWith("audio/"))handleAudio(f);else handleScoreFile(f);}}}/>
             {audioFile?(
               <div>
@@ -493,179 +423,63 @@ Return ONLY valid JSON, no other text.`;
           </div>
 
           <span style={S.lbl}>Production Score / Track Description</span>
-          <textarea
-            value={scoreText}
-            onChange={e=>setScoreText(e.target.value)}
-            placeholder={`Paste your production score, track notes, or description here.\n\nExample:\nTrack: Midnight Hustle\nBPM: 140\nKey: G minor\nInstruments: 808, hi-hats, piano, strings\nStructure: Intro 8 bars, Verse 16, Hook 8, Bridge 4...\nStyle: Dark trap, cinematic G-funk influence`}
-            rows={10}
-            style={S.textarea}
-          />
+          <textarea value={scoreText} onChange={e=>setScoreText(e.target.value)} placeholder={`Paste your production score, track notes, or description here.\n\nExample:\nTrack: Midnight Hustle\nBPM: 140\nKey: G minor\nInstruments: 808, hi-hats, piano, strings\nStructure: Intro, Verse, Hook, Bridge` } rows={10} style={S.textarea}/>
 
-          {manualDur===undefined||audioFile?(
-            <div style={{marginTop:10}}>
-              <span style={S.lbl}>Duration Override (optional)</span>
-              <input value={manualDur} onChange={e=>setManualDur(e.target.value)} placeholder="e.g. 3:42" style={{width:140}}/>
-            </div>
-          ):null}
+          {manualDur===undefined||audioFile?(<div style={{marginTop:10}}><span style={S.lbl}>Duration Override (optional)</span><input value={manualDur} onChange={e=>setManualDur(e.target.value)} placeholder="e.g. 3:42" style={{width:140}}/></div>):null}
         </div>
       </div>
 
-      {error&&(
-        <div style={{background:"rgba(224,68,68,0.1)",border:"1px solid rgba(224,68,68,0.3)",borderRadius:8,padding:"12px 16px",marginBottom:14,color:BRAND.red,fontSize:12}}>
-          ⚠ {error}
-        </div>
-      )}
+      {error&&<div style={{background:"rgba(224,68,68,0.1)",border:"1px solid rgba(224,68,68,0.3)",borderRadius:8,padding:"12px 16px",marginBottom:14,color:BRAND.red,fontSize:12}}>⚠ {error}</div>}
 
       <div style={{display:"flex",gap:10,alignItems:"center"}}>
-        <button
-          onClick={analyze}
-          disabled={analyzing||freeUses>=FREE_LIMIT}
-          style={{...S.btn(analyzing||freeUses>=FREE_LIMIT?BRAND.muted:BRAND.accent,analyzing||freeUses>=FREE_LIMIT?"rgba(255,255,255,0.05)":"rgba(201,153,46,0.15)"),padding:"12px 28px",fontSize:12,opacity:analyzing||freeUses>=FREE_LIMIT?0.5:1,cursor:analyzing||freeUses>=FREE_LIMIT?"not-allowed":"pointer"}}
-        >
-          {analyzing?"⏳ Analyzing...":freeUses>=FREE_LIMIT?"Limit Reached":"🎯 Generate Registration Packet"}
-        </button>
+        <button onClick={analyze} disabled={analyzing||freeUses>=FREE_LIMIT} style={{...S.btn(analyzing||freeUses>=FREE_LIMIT?BRAND.muted:BRAND.accent,analyzing||freeUses>=FREE_LIMIT?"rgba(255,255,255,0.05)":"rgba(201,153,46,0.15)"),padding:"12px 28px",fontSize:12,opacity:analyzing||freeUses>=FREE_LIMIT?0.6:1}}>{analyzing?"⏳ Analyzing...":freeUses>=FREE_LIMIT?"Limit Reached":"🎯 Generate Registration Packet"}</button>
         {hasPackets&&<button onClick={onCancel} style={S.btn(BRAND.muted,"transparent")}>Cancel</button>}
       </div>
 
-      {analyzing&&(
-        <div style={{marginTop:16,padding:"14px 18px",background:"rgba(201,153,46,0.05)",border:`1px solid rgba(201,153,46,0.2)`,borderRadius:8,fontSize:12,color:BRAND.accent,fontFamily:"monospace"}}>
-          ⚡ Claude is analyzing your track and generating all 6 platform registration packets...
-        </div>
-      )}
+      {analyzing&&<div style={{marginTop:16,padding:"14px 18px",background:"rgba(201,153,46,0.05)",border:`1px solid rgba(201,153,46,0.2)`,borderRadius:8,fontSize:12,color:BRAND.accent,fontFamily:"monospace"}}>⚡ Claude is analyzing your track and generating all 6 platform registration packets...</div>}
     </div>
   );
 }
 
-// RESULTS VIEW
 function Results({packet,onBack,onNewTrack,onTitleChange}){
   const[activePlatform,setActivePlatform]=useState("ascap_writer");
   const[editingTitle,setEditingTitle]=useState(false);
   const d=packet.data||{};
   const year=new Date().getFullYear();
 
-  const platforms=PLATFORMS.map(p=>({...p,data:d[p.id]}));
-
   const renderPlatformContent=(pid)=>{
     const pd=d[pid];
     if(!pd)return <div style={{color:BRAND.muted,fontSize:12,padding:"18px"}}>No data for this platform.</div>;
 
     if(pid==="ascap_writer"){
-      return(
-        <div style={S.panelBody}>
-          <FieldBlock label="Work Title" value={pd.workTitle}/>
-          <FieldBlock label="Alternative Titles" value={pd.alternativeTitles?.join(", ")||"None"}/>
-          <FieldBlock label="Work Type" value={pd.workType}/>
-          <FieldBlock label="Classification" value={pd.classification}/>
-          <FieldBlock label="Instrumentation" value={pd.instrumentation}/>
-          <FieldBlock label="Timing / Duration" value={pd.timing||d.duration}/>
-          <FieldBlock label="Writer Name" value={pd.writerName}/>
-          <FieldBlock label="Writer Role" value={pd.writerRole}/>
-          <FieldBlock label="Writer Share" value={pd.writerShare}/>
-          <FieldBlock label="ISWC" value={pd.iswc}/>
-          <FieldBlock label="Release Status" value={pd.releaseStatus}/>
-          <FieldBlock label="AI Disclosure" value={pd.aiDisclosure}/>
-          {pd.notes&&<FieldBlock label="Notes" value={pd.notes}/>}
-        </div>
-      );
+      return(<div style={S.panelBody}><FieldBlock label="Work Title" value={pd.workTitle}/><FieldBlock label="Alternative Titles" value={pd.alternativeTitles?.join(", ")||"None"}/><FieldBlock label="Work Type" value={pd.workType}/><FieldBlock label="Classification" value={pd.classification}/><FieldBlock label="Instrumentation" value={pd.instrumentation}/><FieldBlock label="Timing / Duration" value={pd.timing||d.duration}/><FieldBlock label="Writer Name" value={pd.writerName}/><FieldBlock label="Writer Role" value={pd.writerRole}/><FieldBlock label="Writer Share" value={pd.writerShare}/><FieldBlock label="ISWC" value={pd.iswc}/><FieldBlock label="Release Status" value={pd.releaseStatus}/><FieldBlock label="AI Disclosure" value={pd.aiDisclosure}/>{pd.notes&&<FieldBlock label="Notes" value={pd.notes}/>}</div>);
     }
     if(pid==="ascap_publisher"){
-      return(
-        <div style={S.panelBody}>
-          <FieldBlock label="Publisher Name" value={pd.publisherName}/>
-          <FieldBlock label="Publisher Share" value={pd.publisherShare}/>
-          <FieldBlock label="Publisher Role" value={pd.publisherRole}/>
-          <FieldBlock label="Linked Writer" value={pd.linkedWriter}/>
-          <FieldBlock label="Work Title" value={pd.workTitle}/>
-          {pd.notes&&<FieldBlock label="Notes" value={pd.notes}/>}
-        </div>
-      );
+      return(<div style={S.panelBody}><FieldBlock label="Publisher Name" value={pd.publisherName}/><FieldBlock label="Publisher Share" value={pd.publisherShare}/><FieldBlock label="Publisher Role" value={pd.publisherRole}/><FieldBlock label="Linked Writer" value={pd.linkedWriter}/><FieldBlock label="Work Title" value={pd.workTitle}/>{pd.notes&&<FieldBlock label="Notes" value={pd.notes}/>}</div>);
     }
     if(pid==="copyright_gov"){
-      return(
-        <div style={S.panelBody}>
-          <FieldBlock label="Work Type" value={pd.workType}/>
-          <FieldBlock label="Title" value={pd.title}/>
-          <FieldBlock label="Author" value={pd.author}/>
-          <FieldBlock label="Year of Creation" value={pd.yearOfCreation}/>
-          <FieldBlock label="Year of Publication" value={pd.yearOfPublication}/>
-          <FieldBlock label="Nation" value={pd.nation}/>
-          <FieldBlock label="Claimant" value={pd.claimant}/>
-          <FieldBlock label="Rights & Permissions Contact" value={pd.rightsAndPermissions}/>
-          <FieldBlock label="Description" value={pd.description}/>
-          <FieldBlock label="Form Type" value={pd.formType}/>
-          <FieldBlock label="Filing Fee" value={pd.fee}/>
-          <FieldBlock label="Filing Notes" value={pd.filingNotes}/>
-        </div>
-      );
+      return(<div style={S.panelBody}><FieldBlock label="Work Type" value={pd.workType}/><FieldBlock label="Title" value={pd.title}/><FieldBlock label="Author" value={pd.author}/><FieldBlock label="Year of Creation" value={pd.yearOfCreation}/><FieldBlock label="Year of Publication" value={pd.yearOfPublication}/><FieldBlock label="Nation" value={pd.nation}/><FieldBlock label="Claimant" value={pd.claimant}/><FieldBlock label="Rights & Permissions Contact" value={pd.rightsAndPermissions}/><FieldBlock label="Description" value={pd.description}/><FieldBlock label="Form Type" value={pd.formType}/><FieldBlock label="Filing Fee" value={pd.fee}/><FieldBlock label="Filing Notes" value={pd.filingNotes}/></div>);
     }
     if(pid==="mlc"){
-      return(
-        <div style={S.panelBody}>
-          <FieldBlock label="Work Title" value={pd.workTitle}/>
-          <FieldBlock label="Work Type" value={pd.workType}/>
-          <FieldBlock label="Writers" value={pd.writers}/>
-          <FieldBlock label="Publishers" value={pd.publishers}/>
-          <FieldBlock label="ISRC" value={pd.isrc}/>
-          <FieldBlock label="ISWC" value={pd.iswc}/>
-          <FieldBlock label="Genres" value={Array.isArray(pd.genres)?pd.genres.join(", "):pd.genres}/>
-          <FieldBlock label="Notes" value={pd.notes}/>
-        </div>
-      );
+      return(<div style={S.panelBody}><FieldBlock label="Work Title" value={pd.workTitle}/><FieldBlock label="Work Type" value={pd.workType}/><FieldBlock label="Writers" value={pd.writers}/><FieldBlock label="Publishers" value={pd.publishers}/><FieldBlock label="ISRC" value={pd.isrc}/><FieldBlock label="ISWC" value={pd.iswc}/><FieldBlock label="Genres" value={Array.isArray(pd.genres)?pd.genres.join(", "):pd.genres}/><FieldBlock label="Notes" value={pd.notes}/></div>);
     }
     if(pid==="distrokid"){
-      return(
-        <div style={S.panelBody}>
-          <FieldBlock label="Track Title" value={pd.trackTitle}/>
-          <FieldBlock label="Artist" value={pd.artist}/>
-          <FieldBlock label="Label" value={pd.label}/>
-          <FieldBlock label="Genre" value={pd.genre}/>
-          <FieldBlock label="Subgenre" value={pd.subgenre}/>
-          <FieldBlock label="Release Date" value={pd.releaseDate}/>
-          <FieldBlock label="Language" value={pd.language}/>
-          <FieldBlock label="Explicit" value={pd.explicit}/>
-          <FieldBlock label="Content ID" value={pd.contentId}/>
-          <FieldBlock label="UPC Note" value={pd.upcNote}/>
-          <FieldBlock label="ISRC Note" value={pd.isrcNote}/>
-          {pd.metadataNotes&&<FieldBlock label="Metadata Notes" value={pd.metadataNotes}/>}
-        </div>
-      );
+      return(<div style={S.panelBody}><FieldBlock label="Track Title" value={pd.trackTitle}/><FieldBlock label="Artist" value={pd.artist}/><FieldBlock label="Label" value={pd.label}/><FieldBlock label="Genre" value={pd.genre}/><FieldBlock label="Subgenre" value={pd.subgenre}/><FieldBlock label="Release Date" value={pd.releaseDate}/><FieldBlock label="Language" value={pd.language}/><FieldBlock label="Explicit" value={pd.explicit}/><FieldBlock label="Content ID" value={pd.contentId}/><FieldBlock label="UPC Note" value={pd.upcNote}/><FieldBlock label="ISRC Note" value={pd.isrcNote}/>{pd.metadataNotes&&<FieldBlock label="Metadata Notes" value={pd.metadataNotes}/>}</div>);
     }
     if(pid==="soundexchange"){
-      return(
-        <div style={S.panelBody}>
-          <FieldBlock label="Sound Recording Title" value={pd.soundRecordingTitle}/>
-          <FieldBlock label="Featured Artist" value={pd.featuredArtist}/>
-          <FieldBlock label="Label Name" value={pd.labelName}/>
-          <FieldBlock label="Release Year" value={pd.releaseYear}/>
-          <FieldBlock label="ISRC" value={pd.isrc}/>
-          <FieldBlock label="Registration Note" value={pd.registrationNote}/>
-          <FieldBlock label="Notes" value={pd.notes}/>
-        </div>
-      );
+      return(<div style={S.panelBody}><FieldBlock label="Sound Recording Title" value={pd.soundRecordingTitle}/><FieldBlock label="Featured Artist" value={pd.featuredArtist}/><FieldBlock label="Label Name" value={pd.labelName}/><FieldBlock label="Release Year" value={pd.releaseYear}/><FieldBlock label="ISRC" value={pd.isrc}/><FieldBlock label="Registration Note" value={pd.registrationNote}/><FieldBlock label="Notes" value={pd.notes}/></div>);
     }
     return null;
   };
 
   const activePlat=PLATFORMS.find(p=>p.id===activePlatform);
-
   return(
     <div style={{maxWidth:900,margin:"0 auto",padding:"28px 22px"}}>
-      {/* Header */}
       <div style={{display:"flex",alignItems:"flex-start",gap:14,marginBottom:20,flexWrap:"wrap"}}>
         <button onClick={onBack} style={S.btn(BRAND.muted,"transparent")}>← Library</button>
         <div style={{flex:1,minWidth:0}}>
           <div style={{fontFamily:"monospace",fontSize:10,letterSpacing:2,color:BRAND.accent,textTransform:"uppercase",marginBottom:4}}>Registration Packet</div>
-          {editingTitle?(
-            <TitleEditor
-              current={d.trackTitle}
-              bpm={d.bpm}
-              keyVal={d.key}
-              genre={d.genre}
-              year={year}
-              onSave={(t)=>{onTitleChange(packet.id,t);setEditingTitle(false);}}
-              onCancel={()=>setEditingTitle(false)}
-            />
-          ):(
+          {editingTitle?(<TitleEditor current={d.trackTitle} bpm={d.bpm} keyVal={d.key} genre={d.genre} year={year} onSave={(t)=>{onTitleChange(packet.id,t);setEditingTitle(false);}} onCancel={()=>setEditingTitle(false)}/>):(
             <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
               <div style={{fontSize:20,fontWeight:700,color:BRAND.accentLt,fontFamily:"'Cinzel',Georgia,serif",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{d.trackTitle||"Untitled Track"}</div>
               <button onClick={()=>setEditingTitle(true)} style={{...S.btn(BRAND.muted,"transparent"),padding:"3px 10px",fontSize:9}}>✎ Edit Title</button>
@@ -682,31 +496,19 @@ function Results({packet,onBack,onNewTrack,onTitleChange}){
         <button onClick={onNewTrack} style={S.btn()}>+ New Track</button>
       </div>
 
-      {/* Stats row */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",gap:10,marginBottom:18}}>
         {[
           {label:"Royalty Streams",val:d.royaltyEligibility?.eligible?.length||0,color:BRAND.green},
           {label:"Platforms Ready",val:PLATFORMS.length,color:BRAND.blue},
           {label:"Audit Pass",val:(d.auditChecklist||[]).filter(a=>a.status==="pass").length,color:BRAND.accent},
           {label:"Audit Warn",val:(d.auditChecklist||[]).filter(a=>a.status==="warn").length,color:BRAND.orange},
-        ].map(s=>(
-          <div key={s.label} style={{background:BRAND.surf,border:`1px solid ${BRAND.border}`,borderRadius:8,padding:"12px 14px",textAlign:"center"}}>
-            <div style={{fontSize:24,fontWeight:700,color:s.color,fontFamily:"monospace"}}>{s.val}</div>
-            <div style={{fontSize:10,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase",marginTop:3}}>{s.label}</div>
-          </div>
-        ))}
+        ].map(s=>(<div key={s.label} style={{background:BRAND.surf,border:`1px solid ${BRAND.border}`,borderRadius:8,padding:"12px 14px",textAlign:"center"}}><div style={{fontSize:24,fontWeight:700,color:s.color,fontFamily:"monospace"}}>{s.val}</div><div style={{fontSize:10,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase",marginTop:3}}>{s.label}</div></div>))}
       </div>
 
-      {/* Platform tabs */}
       <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:14}}>
-        {PLATFORMS.map(p=>(
-          <button key={p.id} onClick={()=>setActivePlatform(p.id)} style={{...S.tab(activePlatform===p.id)}}>
-            {p.icon} {p.label}
-          </button>
-        ))}
+        {PLATFORMS.map(p=>(<button key={p.id} onClick={()=>setActivePlatform(p.id)} style={{...S.tab(activePlatform===p.id)}}>{p.icon} {p.label}</button>))}
       </div>
 
-      {/* Platform panel */}
       <div style={S.panel}>
         <div style={{...S.panelHead,borderBottom:`2px solid ${activePlat?.color||BRAND.accent}35`}}>
           <div>
@@ -724,84 +526,17 @@ function Results({packet,onBack,onNewTrack,onTitleChange}){
         {renderPlatformContent(activePlatform)}
       </div>
 
-      {/* Royalty Eligibility */}
-      <div style={S.panel}>
-        <div style={S.panelHead}><span style={{fontWeight:700,fontSize:13,fontFamily:"'Cinzel',Georgia,serif"}}>Royalty Eligibility — 15 Streams</span></div>
-        <div style={{...S.panelBody,display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:8}}>
-          {ROYALTY_STREAMS.map(rs=>{
-            const eligible=d.royaltyEligibility?.eligible?.includes(rs.id);
-            const blocked=d.royaltyEligibility?.blocked?.includes(rs.id);
-            const color=eligible?BRAND.green:blocked?BRAND.red:"#555";
-            return(
-              <div key={rs.id} style={{background:eligible?"rgba(68,201,122,0.06)":blocked?"rgba(224,68,68,0.06)":"rgba(0,0,0,0.15)",border:`1px solid ${eligible?"rgba(68,201,122,0.2)":blocked?"rgba(224,68,68,0.2)":BRAND.border}`,borderRadius:7,padding:"10px 12px"}}>
-                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
-                  <span style={{fontFamily:"monospace",fontSize:9,color,minWidth:22,fontWeight:700}}>#{rs.id}</span>
-                  <span style={{fontSize:12,fontWeight:600,color,flex:1}}>{rs.name}</span>
-                  <span style={{fontSize:9,fontFamily:"monospace",color}}>{eligible?"✓":blocked?"✗":"–"}</span>
-                </div>
-                <div style={{fontSize:10,color:BRAND.muted,paddingLeft:30,lineHeight:1.5}}>
-                  <span style={{color:"#4a3a25"}}>{rs.org}</span> · {rs.delay}
-                </div>
-                <div style={{fontSize:10,color:BRAND.dim,paddingLeft:30,marginTop:2,lineHeight:1.4}}>{rs.notes}</div>
-              </div>
-            );
-          })}
-        </div>
-        {d.royaltyEligibility?.notes&&<div style={{padding:"0 18px 18px",fontSize:11,color:BRAND.muted}}>{d.royaltyEligibility.notes}</div>}
-      </div>
+      <div style={S.panel}><div style={S.panelHead}><span style={{fontWeight:700,fontSize:13,fontFamily:"'Cinzel',Georgia,serif"}}>Royalty Eligibility — 15 Streams</span></div><div style={{...S.panelBody,display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:8}}>{ROYALTY_STREAMS.map(rs=>{const eligible=d.royaltyEligibility?.eligible?.includes(rs.id);const blocked=d.royaltyEligibility?.blocked?.includes(rs.id);const color=eligible?BRAND.green:blocked?BRAND.red:"#555";return(<div key={rs.id} style={{background:eligible?"rgba(68,201,122,0.06)":blocked?"rgba(224,68,68,0.06)":"rgba(0,0,0,0.15)",border:`1px solid ${eligible?"rgba(68,201,122,0.2)":blocked?"rgba(224,68,68,0.2)":"rgba(255,255,255,0.06)"}`,borderRadius:8,padding:"10px 12px"}}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}><span style={{fontFamily:"monospace",fontSize:9,color,minWidth:22,fontWeight:700}}>#{rs.id}</span><span style={{fontSize:12,fontWeight:600,color,flex:1}}>{rs.name}</span><span style={{fontSize:9,fontFamily:"monospace",color}}>{eligible?"✓":blocked?"✗":"–"}</span></div><div style={{fontSize:10,color:BRAND.muted,paddingLeft:30,lineHeight:1.5}}><span style={{color:"#4a3a25"}}>{rs.org}</span> · {rs.delay}</div><div style={{fontSize:10,color:BRAND.dim,paddingLeft:30,marginTop:2,lineHeight:1.4}}>{rs.notes}</div></div>);})}</div>{d.royaltyEligibility?.notes&&<div style={{padding:"0 18px 18px",fontSize:11,color:BRAND.muted}}>{d.royaltyEligibility.notes}</div>}</div>
 
-      {/* Audit Checklist */}
-      <div style={S.panel}>
-        <div style={S.panelHead}><span style={{fontWeight:700,fontSize:13,fontFamily:"'Cinzel',Georgia,serif"}}>Registration Audit Checklist</span></div>
-        <div style={S.panelBody}>
-          {(d.auditChecklist||[]).map((item,i)=>{
-            const c=item.status==="pass"?BRAND.green:item.status==="fail"?BRAND.red:BRAND.orange;
-            const icon=item.status==="pass"?"✓":item.status==="fail"?"✗":"⚠";
-            return(
-              <div key={i} style={{display:"flex",gap:12,padding:"9px 0",borderBottom:`1px solid ${BRAND.border}`,alignItems:"flex-start"}}>
-                <span style={{color:c,fontFamily:"monospace",fontWeight:700,fontSize:13,minWidth:16,marginTop:1}}>{icon}</span>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:12,fontWeight:600,color:BRAND.text,marginBottom:2}}>{item.item}</div>
-                  <div style={{fontSize:11,color:BRAND.muted,lineHeight:1.5}}>{item.detail}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <div style={S.panel}><div style={S.panelHead}><span style={{fontWeight:700,fontSize:13,fontFamily:"'Cinzel',Georgia,serif"}}>Registration Audit Checklist</span></div><div style={S.panelBody}>{(d.auditChecklist||[]).map((item,i)=>(<div key={i} style={{display:"flex",gap:12,padding:"9px 0",borderBottom:`1px solid ${BRAND.border}`,alignItems:"flex-start"}}><span style={{color:item.status==="pass"?BRAND.green:item.status==="fail"?BRAND.red:BRAND.orange,fontFamily:"monospace",fontWeight:700,fontSize:13,minWidth:16,marginTop:1}}>{item.status==="pass"?"✓":item.status==="fail"?"✗":"⚠"}</span><div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:BRAND.text,marginBottom:2}}>{item.item}</div><div style={{fontSize:11,color:BRAND.muted,lineHeight:1.5}}>{item.detail}</div></div></div>))}</div></div>
 
-      {/* Legal Documents */}
-      <div style={S.panel}>
-        <div style={S.panelHead}><span style={{fontWeight:700,fontSize:13,fontFamily:"'Cinzel',Georgia,serif"}}>Legal Documents</span></div>
-        <div style={S.panelBody}>
-          <div style={{marginBottom:18}}>
-            <span style={S.lbl}>Authorship Statement</span>
-            <div style={S.copyBox}>{d.authorshipStatement||""}<CopyButton text={d.authorshipStatement||""}/></div>
-          </div>
-          <div>
-            <span style={S.lbl}>Timestamp Document</span>
-            <div style={S.copyBox}>{d.timestampDocument||""}<CopyButton text={d.timestampDocument||""}/></div>
-          </div>
-        </div>
-      </div>
+      <div style={S.panel}><div style={S.panelHead}><span style={{fontWeight:700,fontSize:13,fontFamily:"'Cinzel',Georgia,serif"}}>Legal Documents</span></div><div style={S.panelBody}><div style={{marginBottom:18}}><span style={S.lbl}>Authorship Statement</span><div style={S.copyBox}>{d.authorshipStatement||""}<CopyButton text={d.authorshipStatement||""}/></div></div><div><span style={S.lbl}>Timestamp Document</span><div style={S.copyBox}>{d.timestampDocument||""}<CopyButton text={d.timestampDocument||""}/></div></div></div></div>
 
-      {/* AI Details */}
-      {(d.instruments?.length>0||d.songStructure||d.aiInvolvement)&&(
-        <div style={S.panel}>
-          <div style={S.panelHead}><span style={{fontWeight:700,fontSize:13,fontFamily:"'Cinzel',Georgia,serif"}}>Production Details</span></div>
-          <div style={S.panelBody}>
-            {d.instruments?.length>0&&<FieldBlock label="Instruments" value={d.instruments.join(", ")}/>}
-            {d.songStructure&&<FieldBlock label="Song Structure" value={d.songStructure}/>}
-            {d.aiInvolvement&&<FieldBlock label="AI Involvement" value={d.aiInvolvement}/>}
-            {d.brandingElement&&<FieldBlock label="Branding Element" value={d.brandingElement}/>}
-          </div>
-        </div>
-      )}
+      {(d.instruments?.length>0||d.songStructure||d.aiInvolvement)&&<div style={S.panel}><div style={S.panelHead}><span style={{fontWeight:700,fontSize:13,fontFamily:"'Cinzel',Georgia,serif"}}>Production Details</span></div><div style={S.panelBody}>{d.instruments?.length>0&&<FieldBlock label="Instruments" value={d.instruments.join(", ")}/>} {d.songStructure&&<FieldBlock label="Song Structure" value={d.songStructure}/>} {d.aiInvolvement&&<FieldBlock label="AI Involvement" value={d.aiInvolvement}/>} {d.brandingElement&&<FieldBlock label="Branding Element" value={d.brandingElement}/>}</div></div>}
     </div>
   );
 }
 
-// MAIN APP
 function App(){
   const[apiKey,setApiKey]=useState(()=>HARDCODED_KEY||localStorage.getItem("iconic-api-key")||"");
   const[view,setView]=useState("library");
@@ -811,10 +546,7 @@ function App(){
   const[freeUses,setFreeUses]=useState(()=>loadFreeUses());
   const[showPaywall,setShowPaywall]=useState(()=>loadFreeUses()>=FREE_LIMIT);
 
-  useEffect(()=>{
-    if(freeUses>=FREE_LIMIT) setShowPaywall(true);
-  },[freeUses]);
-
+  useEffect(()=>{if(freeUses>=FREE_LIMIT)setShowPaywall(true);},[freeUses]);
   const persist=(updated)=>{setSaveStatus("saving");const ok=savePackets(updated);setSaveStatus(ok?"saved":"error");setTimeout(()=>setSaveStatus(""),2000);};
   const handleApiKey=(k)=>{localStorage.setItem("iconic-api-key",k);setApiKey(k);};
 
@@ -822,35 +554,18 @@ function App(){
     const updated=[packet,...packets];
     setPackets(updated);persist(updated);
     const newUses=freeUses+1;
-    setFreeUses(newUses);
-    saveFreeUses(newUses);
-    setSelectedPacket(packet);setView("results");
-    if(newUses>=FREE_LIMIT) setShowPaywall(true);
+    setFreeUses(newUses);saveFreeUses(newUses);setSelectedPacket(packet);setView("results");
+    if(newUses>=FREE_LIMIT)setShowPaywall(true);
   };
 
   const handleDelete=(id)=>{const updated=packets.filter(p=>p.id!==id);setPackets(updated);persist(updated);if(selectedPacket?.id===id){setSelectedPacket(null);setView("library");}};
 
   const handleTitleChange=(id,newTitle)=>{
-    const updated=packets.map(p=>{
-      if(p.id!==id)return p;
-      const data={...p.data,trackTitle:newTitle};
-      if(data.ascap_writer)data.ascap_writer={...data.ascap_writer,workTitle:newTitle};
-      if(data.ascap_publisher)data.ascap_publisher={...data.ascap_publisher,workTitle:newTitle};
-      if(data.mlc)data.mlc={...data.mlc,workTitle:newTitle};
-      if(data.distrokid)data.distrokid={...data.distrokid,trackTitle:newTitle};
-      if(data.soundexchange)data.soundexchange={...data.soundexchange,soundRecordingTitle:newTitle};
-      if(data.copyright_gov)data.copyright_gov={...data.copyright_gov,title:`${newTitle} — Production Score`};
-      return{...p,data};
-    });
-    setPackets(updated);persist(updated);
-    const refreshed=updated.find(p=>p.id===id);
-    if(refreshed)setSelectedPacket(refreshed);
+    const updated=packets.map(p=>{if(p.id!==id)return p;const data={...p.data,trackTitle:newTitle};if(data.ascap_writer)data.ascap_writer={...data.ascap_writer,workTitle:newTitle};if(data.ascap_publisher)data.ascap_publisher={...data.ascap_publisher,workTitle:newTitle};if(data.mlc)data.mlc={...data.mlc,workTitle:newTitle};if(data.distrokid)data.distrokid={...data.distrokid,trackTitle:newTitle};if(data.soundexchange)data.soundexchange={...data.soundexchange,soundRecordingTitle:newTitle};if(data.copyright_gov)data.copyright_gov={...data.copyright_gov,title:`${newTitle} — Production Score`};return{...p,data};});
+    setPackets(updated);persist(updated);const refreshed=updated.find(p=>p.id===id);if(refreshed)setSelectedPacket(refreshed);
   };
 
-  const handleNewTrack=()=>{
-    if(freeUses>=FREE_LIMIT){setShowPaywall(true);}
-    else{setView("upload");}
-  };
+  const handleNewTrack=()=>{if(freeUses>=FREE_LIMIT){setShowPaywall(true);}else{setView("upload");}}
 
   if(!apiKey.startsWith("sk-ant-"))return <ApiKeySetup onSave={handleApiKey}/>;
 
@@ -863,19 +578,19 @@ function App(){
           <div style={{fontFamily:"'Yellowtail',cursive",fontSize:13,color:BRAND.accent,lineHeight:1,marginBottom:2}}>An Evolution Of Santiago Green Production</div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <div style={{fontFamily:"'Cinzel',Georgia,serif",fontSize:15,fontWeight:700,background:BRAND.goldGrd,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",letterSpacing:1}}>iCONiCbyAESGP</div>
-            <span style={{fontSize:9,fontFamily:"monospace",letterSpacing:1,padding:"2px 7px",borderRadius:10,background:"rgba(68,201,122,0.15)",border:"1px solid rgba(68,201,122,0.3)",color:"#44C97A"}}>FREE</span>
+            <span style={{fontSize:9,fontFamily:"monospace",letterSpacing:1,padding:"2px 7px",borderRadius:10,background:"rgba(68,201,122,0.15)",border:"1px solid rgba(68,201,122,0.3)",color:"#44C97A"}}>LIVE</span>
           </div>
           <div style={{fontSize:10,color:BRAND.muted,fontFamily:"monospace"}}>Registration Packet Generator</div>
         </div>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
-          <span style={{fontSize:10,fontFamily:"monospace",color:freeUses<FREE_LIMIT?BRAND.accent:BRAND.red,padding:"3px 10px",borderRadius:10,background:freeUses<FREE_LIMIT?"rgba(201,153,46,0.1)":"rgba(224,68,68,0.1)",border:`1px solid ${freeUses<FREE_LIMIT?"rgba(201,153,46,0.25)":"rgba(224,68,68,0.25)"}`}}>{freeUses}/{FREE_LIMIT} free</span>
-          {saveStatus&&<span style={{fontSize:10,fontFamily:"monospace",letterSpacing:1,padding:"3px 10px",borderRadius:10,background:saveStatus==="saved"?"rgba(68,201,122,0.15)":saveStatus==="error"?"rgba(224,68,68,0.15)":"rgba(201,153,46,0.1)",color:saveStatus==="saved"?BRAND.green:saveStatus==="error"?BRAND.red:BRAND.accent,border:`1px solid ${saveStatus==="saved"?"rgba(68,201,122,0.3)":saveStatus==="error"?"rgba(224,68,68,0.3)":"rgba(201,153,46,0.2)"}`}}>{saveStatus==="saving"?"💾 Saving...":saveStatus==="saved"?"✓ Saved":"⚠ Save failed"}</span>}
-          <button onClick={()=>{if(window.confirm("Change API key?")){localStorage.removeItem("iconic-api-key");setApiKey("");}}} style={{...S.btn(BRAND.muted,"transparent"),padding:"4px 10px",fontSize:9}}>🔑</button>
+          <span style={{fontSize:10,fontFamily:"monospace",color:freeUses<FREE_LIMIT?BRAND.accent:BRAND.red,padding:"3px 10px",borderRadius:10,background:freeUses<FREE_LIMIT?"rgba(201,153,46,0.1)":"rgba(224,68,68,0.1)"}}>{freeUses} / {FREE_LIMIT} used</span>
+          {saveStatus&&<span style={{fontSize:10,fontFamily:"monospace",letterSpacing:1,padding:"3px 10px",borderRadius:10,background:saveStatus==="saved"?"rgba(68,201,122,0.15)":saveStatus==="error"?"rgba(224,68,68,0.15)":"rgba(255,255,255,0.05)"}}>{saveStatus}</span>}
+          <button onClick={()=>{if(window.confirm("Change API key?")){localStorage.removeItem("iconic-api-key");setApiKey("");}}} style={{...S.btn(BRAND.muted,"transparent"),padding:"4px 10px",fontSize:9}}>API</button>
         </div>
       </div>
-      {view==="library"&&<Library packets={packets} onSelect={p=>{setSelectedPacket(p);setView("results");}} onDelete={handleDelete} onNew={handleNewTrack} freeUses={freeUses}/>}
-      {view==="upload"&&<UploadForm hasPackets={packets.length>0} onComplete={handleComplete} onCancel={()=>setView("library")} apiKey={apiKey} freeUses={freeUses}/>}
-      {view==="results"&&selectedPacket&&<Results packet={selectedPacket} onBack={()=>setView("library")} onNewTrack={handleNewTrack} onTitleChange={handleTitleChange}/>}
+      {view==="library"&&<Library packets={packets} onSelect={p=>{setSelectedPacket(p);setView("results");}} onDelete={handleDelete} onNew={handleNewTrack} freeUses={freeUses}/>} 
+      {view==="upload"&&<UploadForm hasPackets={packets.length>0} onComplete={handleComplete} onCancel={()=>setView("library")} apiKey={apiKey} freeUses={freeUses}/>} 
+      {view==="results"&&selectedPacket&&<Results packet={selectedPacket} onBack={()=>setView("library")} onNewTrack={handleNewTrack} onTitleChange={handleTitleChange}/>} 
     </div>
   );
 }
