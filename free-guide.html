@@ -1,0 +1,453 @@
+<title>15 Missed Royalty Streams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Archivo:wght@300;400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07050a;--surf:#0f0c12;--panel:#110e15;--border:#1e1720;
+  --gold1:#fff4c8;--gold2:#d4a437;--gold3:#8a5c14;--accent:#c9992e;
+  --text:#f0e8d0;--muted:#7a6a55;--dim:#3a2e22;--green:#44C97A;
+  --goldGrd:linear-gradient(135deg,#fff4c8 0%,#d4a437 55%,#8a5c14 100%);
+}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#07050a;--surf:#0f0c12;--panel:#110e15;--border:#1e1720;--text:#f0e8d0;--muted:#7a6a55;
+}}
+:root[data-theme="dark"]{--bg:#07050a;--surf:#0f0c12;color-scheme:dark}
+body{background:var(--bg);color:var(--text);font-family:'Archivo',system-ui,sans-serif;line-height:1.65}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#0f0c12}::-webkit-scrollbar-thumb{background:#2a2030;border-radius:3px}
+
+/* ── Layout ── */
+.page{max-width:780px;margin:0 auto;padding:40px 24px 80px}
+
+/* ── Cover ── */
+.cover{text-align:center;padding:56px 24px 48px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.cover-eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;font-weight:600}
+.cover-num{font-family:'Cinzel',serif;font-size:clamp(72px,14vw,120px);font-weight:900;line-height:1;background:var(--goldGrd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-title{font-family:'Cinzel',serif;font-size:clamp(18px,4vw,28px);font-weight:700;color:var(--gold1);margin-top:8px;margin-bottom:16px;line-height:1.2}
+.cover-sub{font-size:15px;color:var(--muted);max-width:480px;margin:0 auto 28px;line-height:1.7}
+.cover-author{font-size:13px;color:var(--muted);margin-top:24px}
+.cover-author strong{color:var(--accent);font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em}
+
+/* ── Intro ── */
+.intro{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px 28px;margin-bottom:48px;font-size:14px;color:var(--text);line-height:1.8}
+.intro h2{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--gold1);margin-bottom:12px}
+
+/* ── Section label ── */
+.section-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── Royalty card ── */
+.royalty-grid{display:flex;flex-direction:column;gap:20px;margin-bottom:48px}
+.r-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.r-header{display:flex;align-items:flex-start;gap:16px;padding:20px 22px 16px}
+.r-num{font-family:'Cinzel',serif;font-size:26px;font-weight:900;background:var(--goldGrd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;flex-shrink:0;min-width:36px}
+.r-head{flex:1;min-width:0}
+.r-org{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:4px}
+.r-name{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--gold1);line-height:1.25;margin-bottom:6px}
+.r-type{font-size:11px;background:#1e1720;border:1px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--muted);display:inline-block}
+.r-body{padding:0 22px 20px;font-size:13px;color:var(--text);line-height:1.75}
+.r-body p{margin-bottom:10px}
+.r-body p:last-child{margin-bottom:0}
+.r-action{background:#0f0c12;border-top:1px solid var(--border);padding:14px 22px;display:flex;align-items:flex-start;gap:10px}
+.r-action-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:700;flex-shrink:0;padding-top:1px}
+.r-action-text{font-size:12px;color:var(--muted);line-height:1.6}
+.r-action-text a{color:var(--accent);text-decoration:none;word-break:break-all}
+.r-missed{position:relative}
+.r-missed::before{content:'COMMONLY MISSED';position:absolute;top:12px;right:14px;font-size:9px;letter-spacing:.1em;background:#c9992e22;color:var(--accent);border:1px solid #c9992e44;border-radius:4px;padding:2px 7px;font-weight:700}
+
+/* ── CTA footer ── */
+.cta-footer{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:36px 28px;text-align:center;margin-top:48px}
+.cta-footer h2{font-family:'Cinzel',serif;font-size:clamp(18px,4vw,24px);font-weight:700;color:var(--gold1);margin-bottom:12px}
+.cta-footer p{font-size:14px;color:var(--muted);max-width:500px;margin:0 auto 24px;line-height:1.7}
+.cta-btn{display:inline-block;background:var(--goldGrd);color:#07050a;font-family:'Cinzel',serif;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;border:none;border-radius:8px;padding:14px 32px;cursor:pointer;text-decoration:none;transition:opacity .15s}
+.cta-btn:hover{opacity:.88}
+.cta-note{font-size:11px;color:var(--muted);margin-top:14px}
+
+/* ── Responsive ── */
+@media(max-width:500px){
+  .r-header{flex-direction:column;gap:8px}
+  .cover-num{font-size:clamp(60px,18vw,90px)}
+  .intro,.cta-footer{padding:20px 16px}
+}
+</style>
+
+<div class="page">
+
+<!-- Cover -->
+<div class="cover">
+  <div id="mono" style="width:52px;height:52px;margin:0 auto 20px"></div>
+  <div class="cover-eyebrow">iCONiCbyAESGP · Free Producer Guide</div>
+  <div class="cover-num">15</div>
+  <div class="cover-title">Royalty Streams<br>Most Beat Producers Miss</div>
+  <div class="cover-sub">Every one of these income streams exists right now. Most independent producers collect one or two. Here's the full picture — with action steps for each.</div>
+  <div class="cover-author">By <strong>Santiago Green</strong> · iCONiCbyAESGP | An Evolution Of Santiago Green Production<br><span style="font-size:12px;margin-top:4px;display:block">ASCAP Member · The MLC · YouTube Content ID · DistroKid · SoundExchange</span></div>
+</div>
+
+<!-- Intro -->
+<div class="intro">
+  <h2>Why Producers Leave Money on the Table</h2>
+  <p>The music industry is built around royalty streams — but nobody explains all of them to independent producers. You register with ASCAP (maybe), you upload to DistroKid (maybe), and then you move on to making the next beat.</p>
+  <p>Meanwhile, mechanical royalties sit unclaimed at The MLC. Digital performance royalties pile up at SoundExchange. Your beats get used in YouTube videos that generate Content ID revenue you never see. International neighboring rights accumulate in territories you never knew existed.</p>
+  <p>This guide covers all 15. Each one has a real organization behind it, a real registration process, and real money waiting to be claimed. Most are free to register for. None of them come to you automatically.</p>
+</div>
+
+<!-- PERFORMANCE ROYALTIES -->
+<div class="section-label">Performance Royalties</div>
+<div class="royalty-grid">
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">01</div>
+      <div class="r-head">
+        <div class="r-org">ASCAP</div>
+        <div class="r-name">Performance Royalties — Writer Share</div>
+        <span class="r-type">PRO · Writer Registration</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>Every time your song is performed publicly — on streaming platforms, radio, live venues, TV, film — ASCAP collects a fee from whoever played it and distributes it to the songwriter. As a producer who co-writes the music, you're entitled to the writer's share.</p>
+      <p>This requires a separate ASCAP Writer account. If you only have a publisher account, you're missing half the money.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Register as a Writer at <a href="https://www.ascap.com/music-creators">ascap.com/music-creators</a> · $50 one-time fee · Register each work after release</div>
+    </div>
+  </div>
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">02</div>
+      <div class="r-head">
+        <div class="r-org">ASCAP</div>
+        <div class="r-name">Performance Royalties — Publisher Share</div>
+        <span class="r-type">PRO · Publisher Registration</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>ASCAP splits performance royalties 50/50 between the writer and the publisher. If you don't have a publishing entity registered, the publisher share goes uncollected. As an independent producer, you are your own publisher — but you have to register separately to collect that half.</p>
+      <p>The Publisher share is paid to a separate entity from the Writer share, which is why it requires a separate registration form and a publishing company name.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Register a publishing entity separately at ASCAP · Name it "[Your Name] Music" or your production company · $50 one-time fee · Link works to both accounts</div>
+    </div>
+  </div>
+
+  <div class="r-card">
+    <div class="r-header">
+      <div class="r-num">03</div>
+      <div class="r-head">
+        <div class="r-org">BMI</div>
+        <div class="r-name">Performance Royalties (Alternative to ASCAP)</div>
+        <span class="r-type">PRO · Free Registration</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>BMI is the other major U.S. Performing Rights Organization. You can only be a member of one PRO at a time (ASCAP or BMI, not both). BMI is free to join for songwriters and publishers, while ASCAP charges a one-time fee. Both collect the same types of royalties. Choose one and register all your works there.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">If not yet with ASCAP: register at <a href="https://www.bmi.com/creators">bmi.com/creators</a> · Free for songwriters · $150 for publisher registration</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MECHANICAL ROYALTIES -->
+<div class="section-label">Mechanical Royalties</div>
+<div class="royalty-grid">
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">04</div>
+      <div class="r-head">
+        <div class="r-org">The MLC</div>
+        <div class="r-name">Digital Mechanical Royalties</div>
+        <span class="r-type">Mechanical · Free Registration</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>The Mechanical Licensing Collective was created by the Music Modernization Act (2018) to collect mechanical royalties from digital streaming services — Spotify, Apple Music, Amazon Music, etc. These are paid per stream for the reproduction of your composition, separate from performance royalties.</p>
+      <p>The MLC has a database of unclaimed royalties. If your music is streaming and you're not registered, that money is held in their unmatched pool. Registration is free and retroactive claims are possible.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Register your works at <a href="https://www.themlc.com">themlc.com</a> · Free · Required separately from your PRO · Register each released work with ISRC and UPC</div>
+    </div>
+  </div>
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">05</div>
+      <div class="r-head">
+        <div class="r-org">DistroKid / Distribution Platform</div>
+        <div class="r-name">Publishing / Mechanical Admin</div>
+        <span class="r-type">Distribution · Publishing Admin</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>DistroKid (and similar distributors) can register your compositions with publishing admin services that collect mechanical royalties internationally — including markets The MLC doesn't cover. DistroKid's "Publishing" add-on registers with sub-publishers in 100+ countries. Without this, foreign mechanical royalties are uncollected.</p>
+      <p>Key metadata that must be correct: ISRC codes, song title spelling, composer and publisher names, and split percentages.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">In DistroKid: enable Publishing Admin for each release · Verify ISRC codes are generated and recorded · Confirm songwriter credits and publisher listed accurately</div>
+    </div>
+  </div>
+
+  <div class="r-card">
+    <div class="r-header">
+      <div class="r-num">06</div>
+      <div class="r-head">
+        <div class="r-org">Harry Fox Agency / Songfile</div>
+        <div class="r-name">Physical & Download Mechanical Royalties</div>
+        <span class="r-type">Mechanical · Physical Media</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>If your music appears on physical media (CDs, vinyl, cassettes) or is sold as a download, mechanical royalties are owed to the songwriter/publisher per unit. HFA licenses these on behalf of publishers and collects royalties from labels and physical distributors. Less relevant for streaming-only releases, but important if you have any physical distribution deal.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">If you have physical releases or download sales: register at <a href="https://www.harryfox.com">harryfox.com</a> as a publisher · Submit your catalog</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- DIGITAL PERFORMANCE -->
+<div class="section-label">Digital Performance Royalties</div>
+<div class="royalty-grid">
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">07</div>
+      <div class="r-head">
+        <div class="r-org">SoundExchange</div>
+        <div class="r-name">Digital Performance Royalties (Master Owner)</div>
+        <span class="r-type">Digital Performance · Free Registration</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>SoundExchange collects royalties specifically for master recording owners and featured artists when music plays on non-interactive digital platforms — satellite radio (SiriusXM), internet radio (Pandora, iHeartRadio), and certain streaming modes. These are paid to the master owner and the featured artist separately.</p>
+      <p>This is completely separate from your PRO. Your ASCAP registration does NOT collect SoundExchange royalties. Millions of dollars in SoundExchange royalties go unclaimed every year because producers don't know this exists.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Register free at <a href="https://www.soundexchange.com">soundexchange.com</a> as both the Rights Owner and Featured Artist · Submit your catalog · Check for unclaimed royalties immediately</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- COPYRIGHT & LEGAL -->
+<div class="section-label">Copyright Protection & Legal</div>
+<div class="royalty-grid">
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">08</div>
+      <div class="r-head">
+        <div class="r-org">U.S. Copyright Office</div>
+        <div class="r-name">Federal Copyright Registration</div>
+        <span class="r-type">Legal Protection · $45–$65 per filing</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>Copyright exists automatically when you create a work, but federal registration is required to sue for statutory damages and attorney's fees in court. Without registration before infringement occurs, you can only recover actual damages — which are often impossible to prove. Registering within 3 months of publication or before infringement preserves the full range of legal remedies.</p>
+      <p>For producers: register both the musical composition (melody/harmony) and the sound recording (the actual beat file) — these are two separate copyrights.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Register at <a href="https://www.copyright.gov/registration">copyright.gov/registration</a> · eCO online system · $45 for single work, $65 for group of unpublished works · File within 3 months of release</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SYNC & LICENSING -->
+<div class="section-label">Sync Licensing & Placement</div>
+<div class="royalty-grid">
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">09</div>
+      <div class="r-head">
+        <div class="r-org">Direct Licensing / Music Libraries</div>
+        <div class="r-name">Sync Licensing — Film, TV, Ads, Games</div>
+        <span class="r-type">Sync · Placement Fee + Backend Royalties</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>Sync licensing pays an upfront placement fee when your music is used in visual media — TV shows, films, commercials, YouTube channels, games, trailers — plus backend royalties through your PRO every time that content airs. Sync deals can range from $100 for an indie YouTube video to six figures for a national TV ad.</p>
+      <p>To pursue sync: your music must be cleared (no uncleared samples), properly registered with your PRO and copyright office, and available in stems (separated audio tracks). Libraries like Musicbed, Artlist, and Epidemic Sound license beats for a revenue share model.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Ensure all beats are sample-free or fully cleared · Export stems · Submit to sync libraries: Musicbed, Artlist, Pond5, Musicbed, or directly pitch to music supervisors · Register each placed work with ASCAP immediately</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- YOUTUBE & DIGITAL -->
+<div class="section-label">YouTube & Digital Content</div>
+<div class="royalty-grid">
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">10</div>
+      <div class="r-head">
+        <div class="r-org">YouTube / DistroKid / AdRev</div>
+        <div class="r-name">YouTube Content ID Monetization</div>
+        <span class="r-type">Content ID · Ad Revenue Share</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>YouTube Content ID scans every video uploaded to YouTube and matches audio fingerprints against registered tracks. When a match is found, the rightsholder can claim ad revenue from that video. If you're a beat producer and someone uploads a song using your beat, Content ID can automatically capture that video's ad revenue on your behalf.</p>
+      <p>Access requires registering through a Content ID partner — DistroKid's "YouTube Money" add-on, AdRev, Identifyy, or a distributor that includes it. Direct access to Content ID is not available to most independent artists without a partner.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Enable YouTube Money in DistroKid, or register with AdRev / Identifyy · Submit your catalog fingerprints · Note: this will claim videos of people who used your beats — factor into your beat license terms</div>
+    </div>
+  </div>
+
+  <div class="r-card">
+    <div class="r-header">
+      <div class="r-num">11</div>
+      <div class="r-head">
+        <div class="r-org">YouTube</div>
+        <div class="r-name">Channel Ad Revenue (Direct)</div>
+        <span class="r-type">Ad Revenue · YouTube Partner Program</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>Your own YouTube channel generates ad revenue directly through the YouTube Partner Program once you hit 1,000 subscribers and 4,000 watch hours. As a beat producer, every beat video, visualizer, and compilation is a monetizable asset. This is direct payment for views on your own uploads, separate from Content ID claims.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Apply for YPP at <a href="https://youtube.com/monetization">youtube.com/monetization</a> once threshold is met · Enable monetization on all existing videos · Set up AdSense account linked to your channel</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- INTERNATIONAL -->
+<div class="section-label">International Royalties</div>
+<div class="royalty-grid">
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">12</div>
+      <div class="r-head">
+        <div class="r-org">International PROs via Reciprocal Agreements</div>
+        <div class="r-name">International Performance Royalties</div>
+        <span class="r-type">Performance · International Collection</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>ASCAP and BMI have reciprocal agreements with performance rights organizations in 100+ countries. When your music plays in Germany, Japan, the UK, or Brazil, those countries' PROs collect royalties and forward them to ASCAP/BMI, which pays them out to you. This is automatic through your PRO membership — but only for works that are registered.</p>
+      <p>Unregistered works generate international royalties that may go to the "black box" — distributed to other rights holders or kept by the collecting society. Register every work.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Register all works with ASCAP or BMI with complete metadata (ISWC numbers are assigned automatically) · Verify your international address and banking info is current in your PRO account</div>
+    </div>
+  </div>
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">13</div>
+      <div class="r-head">
+        <div class="r-org">Neighbouring Rights Organizations</div>
+        <div class="r-name">Neighboring Rights — Master Recording Performance</div>
+        <span class="r-type">Neighboring Rights · International</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>Most countries outside the U.S. pay "neighboring rights" — performance royalties for the master recording (not just the composition) when it plays on radio and TV. The U.S. doesn't have a terrestrial radio performance right for masters, but if your music plays on international radio or TV, these royalties are owed to you as the master rights holder.</p>
+      <p>These are collected by organizations like PPL (UK), GVL (Germany), SENA (Netherlands), and others. Many independent producers never register with these organizations, and the royalties sit uncollected or are redistributed.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Register with <a href="https://www.ppluk.com">PPL (UK)</a> if your music plays in the UK · For other territories, use a neighboring rights agency like Artisten Info or a distributor that includes neighboring rights collection</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BEAT SELLING & LICENSING -->
+<div class="section-label">Direct Beat Sales & Licensing</div>
+<div class="royalty-grid">
+
+  <div class="r-card">
+    <div class="r-header">
+      <div class="r-num">14</div>
+      <div class="r-head">
+        <div class="r-org">Beatstars / Airbit / Direct</div>
+        <div class="r-name">Beat License Sales (Exclusive & Non-Exclusive)</div>
+        <span class="r-type">Direct Sales · License Revenue</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>Selling beats directly — non-exclusive leases, trackouts, exclusive rights — is a direct revenue stream independent of royalties. Non-exclusive licenses ($30–$200) let multiple artists use the beat simultaneously. Exclusive licenses ($300–$5,000+) transfer the right to one buyer, which typically ends non-exclusive licensing. Platforms like Beatstars and Airbit handle the storefront, contracts, and delivery automatically.</p>
+      <p>Every beat license should include proper songwriter credits in the contract so buyers can register correctly with their PROs — this protects both parties.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Set up a storefront on Beatstars or Airbit · Create tiered license options (MP3 lease → trackout → exclusive) · Include songwriter credit requirements in every contract template</div>
+    </div>
+  </div>
+
+  <div class="r-card r-missed">
+    <div class="r-header">
+      <div class="r-num">15</div>
+      <div class="r-head">
+        <div class="r-org">Streaming Platforms (via Distributor)</div>
+        <div class="r-name">Master Recording Streaming Royalties</div>
+        <span class="r-type">Streaming · Master Royalties</span>
+      </div>
+    </div>
+    <div class="r-body">
+      <p>When you upload an instrumental beat to Spotify, Apple Music, Tidal, or any streaming platform through a distributor like DistroKid, you earn master royalties — currently approximately $0.003–$0.005 per stream on Spotify. These are paid to whoever owns the master recording (you, as the producer).</p>
+      <p>This is separate from mechanical royalties (The MLC) and performance royalties (ASCAP). The same stream generates all three. Most producers upload their beats and collect only this one, missing the other two. All three should be set up and registered for every release.</p>
+    </div>
+    <div class="r-action">
+      <div class="r-action-label">Action</div>
+      <div class="r-action-text">Distribute every beat to all platforms via DistroKid · Verify banking/payment info · Monitor monthly statements · Cross-register each release with The MLC and ASCAP for full royalty coverage</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CTA Footer -->
+<div class="cta-footer">
+  <div id="mono2" style="width:48px;height:48px;margin:0 auto 18px"></div>
+  <h2>Register Every Beat in Under 60 Seconds</h2>
+  <p>The iCONiCbyAESGP Registration Tool auto-generates your ASCAP, Publisher, Copyright.gov, MLC, DistroKid, and SoundExchange packets from a single upload. 5 registrations free — no credit card required.</p>
+  <a href="#" class="cta-btn">Try the Free Registration Tool →</a>
+  <div class="cta-note">Replace the link above with your free-tier tool URL before distributing this PDF</div>
+  <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted)">
+    © 2026 iCONiCbyAESGP · An Evolution Of Santiago Green Production · EvolveIconic@iCONiCbyAESGP.com<br>
+    This guide is for educational purposes. For legal and financial advice, consult a music attorney or royalty specialist.
+  </div>
+</div>
+
+</div>
+
+<script>
+const AE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <circle cx="24" cy="24" r="22" stroke="url(#g1)" stroke-width="1.2"/>
+  <circle cx="24" cy="24" r="17" stroke="url(#g1)" stroke-width=".7" opacity=".45"/>
+  <text x="24" y="30" text-anchor="middle" font-family="Cinzel,serif" font-size="14" font-weight="700" fill="url(#g1)">AE</text>
+  <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#fff4c8"/>
+    <stop offset="55%" stop-color="#d4a437"/>
+    <stop offset="100%" stop-color="#8a5c14"/>
+  </linearGradient></defs>
+</svg>`;
+const AE_SVG2 = AE_SVG.replace('id="g1"','id="g2"').replace(/url\(#g1\)/g,'url(#g2)');
+document.getElementById('mono').innerHTML = AE_SVG;
+document.getElementById('mono2').innerHTML = AE_SVG2;
+</script>

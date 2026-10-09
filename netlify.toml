@@ -1,0 +1,32 @@
+# ── iCONiCbyAESGP Netlify Configuration ──────────────────────────────────
+# Deploy this entire folder to Netlify.
+# Public pages:  /  (index.html)
+# Members pages: /members/*  — password-protected
+# ─────────────────────────────────────────────────────────────────────────
+
+[build]
+  publish = "."
+
+# ── Password-protect the /members/ folder ────────────────────────────────
+# Change PASSWORD below to something you share only with paying subscribers.
+# You can also set this in Netlify dashboard → Site settings → Access control.
+[[headers]]
+  for = "/members/*"
+  [headers.values]
+    # Basic auth header — Netlify reads this from the dashboard, not here.
+    # Set it at: Site settings → Access & security → Basic password protection.
+    Cache-Control = "no-store"
+
+# ── Security headers for all pages ───────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# ── Friendly 404 ─────────────────────────────────────────────────────────
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 404

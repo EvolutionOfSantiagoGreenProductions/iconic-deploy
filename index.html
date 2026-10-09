@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iCONiCbyAESGP</title>
+<meta name="description" content="An Evolution Of Santiago Green Production — beats, royalty tools, and cinematic content from Los Angeles.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Archivo:ital,wght@0,300;0,400;0,500;1,300&family=Yellowtail&display=swap">
+<style>
+:root {
+  --bg:       #07050a;
+  --bg-card:  #16121e;
+  --border:   rgba(212,164,55,0.18);
+  --soft:     rgba(255,255,255,0.05);
+  --gold-a:   #fff4c8;
+  --gold-b:   #d4a437;
+  --gold-c:   #8a5c14;
+  --gold-grad: linear-gradient(135deg,#fff4c8 0%,#d4a437 48%,#8a5c14 100%);
+  --gold-text: linear-gradient(90deg,#fff4c8 0%,#d4a437 55%,#c89020 100%);
+  --fg:       #f0ead8;
+  --fg-muted: #8a7f70;
+  --radius:   12px;
+  color-scheme: dark;
+}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){color-scheme:dark}}
+:root[data-theme="dark"]{color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--fg);
+  font-family:'Archivo',system-ui,sans-serif;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;min-height:100%;
+  padding-inline:24px;padding-block:48px;
+  text-align:center;overflow-x:hidden;
+}
+
+/* Gold text util */
+.gt{background:var(--gold-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* Monogram */
+.mono-wrap{margin-bottom:28px}
+.ae-ring{width:80px;height:80px}
+
+/* Type */
+.eyebrow{
+  font-family:'Yellowtail',cursive;font-size:1.1rem;
+  color:var(--gold-b);margin-bottom:12px;letter-spacing:.04em
+}
+h1{
+  font-family:'Cinzel',serif;font-size:clamp(2rem,6vw,3.2rem);
+  font-weight:900;line-height:1.06;letter-spacing:.01em;
+  text-wrap:balance;margin-bottom:16px;
+}
+.tagline{
+  font-size:1rem;color:var(--fg-muted);
+  max-width:42ch;margin-inline:auto;margin-bottom:48px;line-height:1.7
+}
+
+/* Nav cards */
+.nav-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:16px;width:100%;max-width:780px;margin-bottom:48px
+}
+.nav-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:28px 20px;
+  text-decoration:none;transition:border-color .2s,transform .18s;
+  display:flex;flex-direction:column;align-items:center;gap:12px
+}
+.nav-card:hover{border-color:var(--gold-b);transform:translateY(-3px)}
+.nav-card-icon{font-size:1.8rem}
+.nav-card-title{
+  font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:var(--gold-text);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text
+}
+.nav-card-desc{font-size:.8rem;color:var(--fg-muted);line-height:1.5}
+
+/* Members CTA */
+.members-cta{
+  background:var(--bg-card);border:1px solid var(--gold-b);
+  border-radius:var(--radius);padding:32px;
+  max-width:480px;width:100%;margin-bottom:40px
+}
+.members-cta h2{
+  font-family:'Cinzel',serif;font-size:1rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px
+}
+.members-cta p{font-size:.88rem;color:var(--fg-muted);margin-bottom:20px;line-height:1.6}
+.btn{
+  display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;
+  font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:13px 28px;border-radius:8px;text-decoration:none;
+  transition:opacity .2s,transform .15s
+}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+.btn-gold{background:var(--gold-grad);color:var(--bg)}
+.btn-outline{
+  border:1px solid var(--border);color:var(--gold-b);
+  background:transparent;margin-left:12px
+}
+.btn-outline:hover{border-color:var(--gold-b)}
+
+/* Footer */
+footer{
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--fg-muted);line-height:2
+}
+
+@media(max-width:500px){
+  .nav-grid{grid-template-columns:1fr 1fr}
+  .btn-outline{margin-left:0;margin-top:10px;display:block}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="mono-wrap">
+  <svg class="ae-ring" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="iCONiCbyAESGP monogram">
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#fff4c8"/>
+        <stop offset="50%" stop-color="#d4a437"/>
+        <stop offset="100%" stop-color="#8a5c14"/>
+      </linearGradient>
+    </defs>
+    <circle cx="40" cy="40" r="38" stroke="url(#g1)" stroke-width="1.5"/>
+    <circle cx="40" cy="40" r="30" stroke="url(#g1)" stroke-width=".7" opacity=".45"/>
+    <text x="40" y="47" text-anchor="middle" font-family="Cinzel,serif" font-size="20" font-weight="700" fill="url(#g1)">AE</text>
+  </svg>
+</div>
+
+<p class="eyebrow">An Evolution Of Santiago Green Production</p>
+<h1><span class="gt">iCONiCbyAESGP</span></h1>
+<p class="tagline">Beats. Royalty infrastructure. Cinematic content. Built in Los Angeles.</p>
+
+<div class="nav-grid">
+  <a class="nav-card" href="https://www.youtube.com/@IconicBeatsMusicStudios" target="_blank" rel="noopener">
+    <span class="nav-card-icon">▶️</span>
+    <span class="nav-card-title">YouTube</span>
+    <span class="nav-card-desc">Remastered G-Funk & the Evolution of Sound</span>
+  </a>
+  <a class="nav-card" href="https://gumroad.com" target="_blank" rel="noopener">
+    <span class="nav-card-icon">🎵</span>
+    <span class="nav-card-title">Beat Store</span>
+    <span class="nav-card-desc">Lease &amp; exclusive licensing on Gumroad</span>
+  </a>
+  <a class="nav-card" href="/members/">
+    <span class="nav-card-icon">⚙️</span>
+    <span class="nav-card-title">Producer Tools</span>
+    <span class="nav-card-desc">Members-only royalty &amp; registration suite</span>
+  </a>
+  <a class="nav-card" href="mailto:beatsiconic8@gmail.com">
+    <span class="nav-card-icon">✉️</span>
+    <span class="nav-card-title">Contact</span>
+    <span class="nav-card-desc">Licensing, collabs &amp; business inquiries</span>
+  </a>
+</div>
+
+<div class="members-cta">
+  <h2>🔒 Producer Suite — Members Access</h2>
+  <p>AI-generated royalty registration packets, SEO title tools, and 15-stream royalty tracking. Built for independent producers who mean business.</p>
+  <a class="btn btn-gold" href="https://gumroad.com" target="_blank" rel="noopener">Subscribe — $14.99/mo</a>
+  <a class="btn btn-outline" href="/members/">Member Login</a>
+</div>
+
+<footer>
+  © 2026 iCONiCbyAESGP · Los Angeles, CA · All rights reserved
+</footer>
+
+</body>
+</html>

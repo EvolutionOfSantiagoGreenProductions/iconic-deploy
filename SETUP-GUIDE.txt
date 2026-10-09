@@ -1,0 +1,134 @@
+═══════════════════════════════════════════════════════════════
+  iCONiCbyAESGP — DEPLOY PACKAGE v2
+  An Evolution Of Santiago Green Production
+  EvolveIconic@iCONiCbyAESGP.com
+═══════════════════════════════════════════════════════════════
+
+FOLDER STRUCTURE
+────────────────
+iconic-deploy/
+├── index.html                ← Public homepage (nav cards, AE monogram)
+├── optin.html                ← Email capture landing page (Mailchimp embed slot)
+├── free-tool.html            ← Free tier registration tool (5 packets, then paywall)
+├── free-guide.html           ← "15 Missed Royalties" guide (lead magnet / PDF source)
+├── netlify.toml              ← Netlify config (headers, /members/* cache rules)
+├── SETUP-GUIDE.txt           ← This file
+└── members/
+    ├── registration-tool.html ← ORIGINAL working tool (DO NOT MODIFY)
+    └── subscriber-tool.html   ← Unlimited pro clone for paid members
+
+
+STEP 1 — PUSH TO GITHUB
+────────────────────────
+1. Go to github.com → New repository
+2. Name: iconic-deploy  |  Visibility: Private  |  No README
+3. Create repository
+4. Upload all files from this folder:
+   - Click "uploading an existing file" on the empty repo page
+   - Drag the entire iconic-deploy folder contents in
+   - Commit directly to main
+   (OR use GitHub Desktop / git CLI if you prefer)
+
+
+STEP 2 — DEPLOY ON NETLIFY
+────────────────────────────
+1. Go to netlify.com → Add new site → Import from Git
+2. Connect GitHub → select your iconic-deploy repo
+3. Build settings: leave blank (static site, no build command)
+4. Publish directory: leave blank (root)
+5. Deploy site
+6. Your site will be live at a .netlify.app URL immediately
+
+
+STEP 3 — PASSWORD PROTECT /members/
+──────────────────────────────────────
+1. In Netlify: Site settings → Access & Security → Visitor access
+2. Enable "Password protection"
+3. Set a strong password (this is what paid members use to log in)
+4. Save — /members/* is now gated
+
+
+STEP 4 — CONNECT YOUR IONOS DOMAIN
+────────────────────────────────────
+In Netlify: Site settings → Domain management → Add custom domain
+→ Type: iCONiCbyAESGP.com → Verify
+
+In IONOS DNS panel:
+→ A record:     @        →  75.2.60.5
+→ CNAME record: www      →  [yoursite].netlify.app
+
+DNS propagates in 10–60 minutes.
+Enable "Force HTTPS" in Netlify after domain is connected.
+
+
+STEP 5 — UPDATE PLACEHOLDER LINKS
+────────────────────────────────────
+Before going fully live, update these placeholders:
+
+A) In free-tool.html (the paywall overlay):
+   Find: href="https://gumroad.com"
+   Replace with your actual Gumroad $14.99/mo subscription link
+
+B) In free-guide.html (the CTA footer):
+   Find: href="#"  (on the "Try the Free Registration Tool" button)
+   Replace with: https://iCONiCbyAESGP.com/free-tool.html
+   (or your Netlify URL until the custom domain is connected)
+
+C) In optin.html:
+   Replace the placeholder form block with your Mailchimp embedded
+   form code (Audience → Signup Forms → Embedded Forms → Classic)
+
+D) In your Mailchimp Email 1:
+   Replace [LINK TO YOUR PDF] with a direct link to free-guide.html
+   or a Google Drive PDF export of that page
+
+E) In your Mailchimp Email 3:
+   Replace [YOUR GUMROAD LINK] with your actual Gumroad link
+
+
+STEP 6 — GUMROAD SUBSCRIPTION SETUP
+──────────────────────────────────────
+1. Go to gumroad.com → Products → New Product → Membership
+2. Name: iCONiCbyAESGP Members Access
+3. Price: $14.99/month
+4. In the "Thank you" / delivery content:
+   - Members site URL: https://iCONiCbyAESGP.com/members/
+   - Password: [the Netlify visitor access password you set in Step 3]
+5. Publish
+
+
+STEP 7 — MAILCHIMP AUTOMATION
+───────────────────────────────
+1. Mailchimp → Automations → Classic Automations → Welcome new subscribers
+2. Trigger: Immediately when someone subscribes
+3. From: Santiago | iCONiCbyAESGP  |  EvolveIconic@iCONiCbyAESGP.com
+4. Add 3 emails from the email sequence document:
+   - Email 1: Send immediately
+   - Email 2: 3-day delay
+   - Email 3: 7-day delay
+5. Verify domain in Mailchimp → Account → Domains
+6. Set automation to Active
+7. Test with your own email first
+
+
+FUNNEL FLOW SUMMARY
+────────────────────
+Social / YouTube → optin.html
+  ↓ Mailchimp captures email
+  ↓ Auto-delivers link to free-guide.html (lead magnet)
+  ↓ Email 1 also links to free-tool.html
+free-tool.html → 5 free registrations
+  ↓ Paywall fires → Gumroad $14.99/mo
+Gumroad receipt → members/ password
+members/subscriber-tool.html → unlimited access
+
+
+FILES NOT TO TOUCH
+───────────────────
+members/registration-tool.html — this is the ORIGINAL working tool
+used in your own internal workflows. It has no usage limits, no
+paywall, no watermark. Keep it clean.
+
+═══════════════════════════════════════════════════════════════
+  Built by Claude for iCONiCbyAESGP · October 2026
+═══════════════════════════════════════════════════════════════

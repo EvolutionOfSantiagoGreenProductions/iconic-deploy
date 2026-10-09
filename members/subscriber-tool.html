@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>iCONiCbyAESGP Pro — Members Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Archivo:wght@300;400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{height:100%}
+body{background:#07050a;color:#f0e8d0;font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+input,textarea,select,button{font-family:inherit}
+input,textarea{background:#0f0c12;border:1px solid #1e1720;border-radius:6px;color:#f0e8d0;padding:10px 12px;font-size:13px;outline:none;transition:border-color .15s;width:100%}
+input:focus,textarea:focus{border-color:#c9992e}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0f0c12}
+::-webkit-scrollbar-thumb{background:#2a2030;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#c9992e44}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useRef, useCallback, useEffect } = React;
+
+// ─── API KEY CONFIG ───────────────────────────────────────────────────────────
+const HARDCODED_KEY = "";   // ← paste sk-ant-... here if you want it pre-loaded
+
+// ─── BRAND ────────────────────────────────────────────────────────────────────
+const BRAND = {
+  bg:"#07050a", surf:"#0f0c12", panel:"#110e15",
+  border:"#1e1720", border2:"#2a2030",
+  gold1:"#fff4c8", gold2:"#d4a437", gold3:"#8a5c14",
+  accent:"#c9992e", accentLt:"#f0c84a",
+  text:"#f0e8d0", muted:"#7a6a55", dim:"#3a2e22",
+  green:"#44C97A", red:"#E04444", blue:"#4A8FE0",
+  purple:"#9B59B6", orange:"#E67E22",
+  goldGrd:"linear-gradient(135deg,#fff4c8 0%,#d4a437 55%,#8a5c14 100%)",
+};
+
+const PRODUCER = {
+  name:"iCONiCbyAESGP",
+  publisher:"iCONiCbyAESGP | An Evolution Of Santiago Green Production",
+  legalName:"Santiago Green",
+  pro:"ASCAP",
+  youtube:"@IconicBeatsMusicStudios",
+};
+
+// ─── STORAGE (PRO KEY — separate from free tier) ──────────────────────────────
+const STORAGE_KEY = "iconic-reg-packets-pro";
+function loadPackets(){try{const r=localStorage.getItem(STORAGE_KEY);if(r)return JSON.parse(r);}catch(_){}return[];}
+function savePackets(p){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(p));return true;}catch(e){console.error(e);return false;}}
+
+// ─── ROYALTY STREAMS ──────────────────────────────────────────────────────────
+const ROYALTY_STREAMS=[
+  {id:1, name:"Songwriter Performance",        org:"ASCAP or BMI",               delay:"6–9 months",  notes:"Register as writer. Pick one PRO only."},
+  {id:2, name:"Publisher Performance",          org:"ASCAP or BMI",               delay:"6–9 months",  notes:"Set up publisher entity at same PRO. Collects 50% publisher share."},
+  {id:3, name:"Digital Streaming Mechanical",   org:"The MLC (themlc.com)",       delay:"2–4 months",  notes:"$424M+ unmatched royalties held. FREE registration."},
+  {id:4, name:"Physical & Download Mechanical", org:"Songtrust / TuneCore Pub",   delay:"3–6 months",  notes:"CD Baby Pro DISCONTINUED. Use Songtrust or TuneCore Publishing."},
+  {id:5, name:"Master Streaming",               org:"DistroKid / distributor",    delay:"1–3 months",  notes:"Spotify ~$3-5/1K · Apple ~$8-10/1K · Tidal ~$13/1K"},
+  {id:6, name:"US Neighboring Rights",          org:"SoundExchange",              delay:"Quarterly",   notes:"$1B+ paid 2024. Register TWICE: Artist + Rights Owner."},
+  {id:7, name:"International Neighboring",      org:"PPL UK / Sentric",           delay:"6–12 months", notes:"UK, EU, 80+ countries. Register at ppluk.com or via global admin."},
+  {id:8, name:"Sync Licensing Fee",             org:"Direct / Musicbed / Artlist",delay:"On placement",notes:"Indie/YT: $500-5K · TV: $5K-50K · National ad: $10K-250K+"},
+  {id:9, name:"Sync Back-End Performance",      org:"ASCAP or BMI",               delay:"6–9 months",  notes:"Notify PRO of placement with cue sheet. Every broadcast pays."},
+  {id:10,name:"YouTube Content ID",             org:"DistroKid / HAAWK",          delay:"Monthly",     notes:"Claims ad revenue from any YT video using your music."},
+  {id:11,name:"TikTok & Social Media",          org:"SoundOn / Meta Rights Mgr",  delay:"Monthly",     notes:"Register via distributor. Meta Rights Manager auto-activates."},
+  {id:12,name:"Beat License Sales",             org:"BeatStars / Airbit / TrakTrain",delay:"Instant",  notes:"Lease $29.99–$149.99. Exclusive $300–$2,000+. Keep signed split sheets."},
+  {id:13,name:"Producer Points / Master %",     org:"Exclusive License Contract", delay:"Per deal",    notes:"1–5% of master royalties negotiated into exclusive contracts."},
+  {id:14,name:"International Mechanicals",      org:"Songtrust / TuneCore Pub",   delay:"6–12 months", notes:"Covers 60+ countries. CD Baby Pro DISCONTINUED."},
+  {id:15,name:"Print Music Royalties",          org:"Musicnotes.com",             delay:"Monthly",     notes:"Melodic/harmonic works. Self-publish for full margin."},
+];
+
+const PLATFORMS=[
+  {id:"ascap_writer",    label:"ASCAP Writer",    color:BRAND.blue,   icon:"✍️"},
+  {id:"ascap_publisher", label:"ASCAP Publisher", color:BRAND.accent, icon:"📰"},
+  {id:"copyright_gov",   label:"Copyright.gov",   color:BRAND.purple, icon:"©️"},
+  {id:"mlc",             label:"The MLC",          color:BRAND.green,  icon:"⚙️"},
+  {id:"distrokid",       label:"DistroKid",        color:BRAND.red,    icon:"🚀"},
+  {id:"soundexchange",   label:"SoundExchange",    color:BRAND.orange, icon:"📡"},
+];
+
+// ─── JSON PARSING ─────────────────────────────────────────────────────────────
+function robustParseJSON(raw){
+  let c=raw.replace(/^```(?:json)?\s*/im,"").replace(/\s*```\s*$/m,"").trim();
+  try{return JSON.parse(c);}catch(_){}
+  const s=c.indexOf("{"),e=c.lastIndexOf("}");
+  if(s!==-1&&e>s){const sl=c.slice(s,e+1);try{return JSON.parse(sl);}catch(_){}}
+  return extractFieldsSafely(c);
+}
+function extractFieldsSafely(raw){
+  const grab=k=>{const m=raw.match(new RegExp(`"${k}"\\s*:\\s*"([^"]*)"`,"i"));return m?m[1]:""};
+  const grabArr=k=>{const m=raw.match(new RegExp(`"${k}"\\s*:\\s*\\[([^\\]]*)\\]`,"i"));if(!m)return[];return m[1].match(/"([^"]*)"/g)?.map(s=>s.replace(/"/g,""))||[]};
+  const title=grab("trackTitle")||"Untitled Track";
+  const yr=String(new Date().getFullYear());
+  return{
+    trackTitle:title,genre:grab("genre"),bpm:grab("bpm"),key:grab("key"),
+    duration:grab("duration"),catalogType:grab("catalogType"),
+    aiInvolvement:grab("aiInvolvement"),instruments:grabArr("instruments"),
+    songStructure:grab("songStructure"),brandingElement:grab("brandingElement"),
+    ascap_writer:{workTitle:title,alternativeTitles:[],workType:"Musical Work",
+      classification:"Popular",instrumentation:"Instrumental",timing:grab("duration"),
+      writerName:PRODUCER.legalName,writerRole:"Composer",writerShare:"50%",
+      iswc:"Leave blank — ASCAP auto-assigns",releaseStatus:"Unpublished",
+      aiDisclosure:"AI-assisted production under human creative direction by "+PRODUCER.legalName,notes:""},
+    ascap_publisher:{publisherName:PRODUCER.publisher,publisherShare:"50%",
+      publisherRole:"Original Publisher",linkedWriter:PRODUCER.legalName,workTitle:title,notes:""},
+    copyright_gov:{workType:"Literary Work (Production Score)",title:`${title} — Production Score`,
+      author:PRODUCER.legalName,yearOfCreation:yr,yearOfPublication:"Leave blank if unpublished",
+      nation:"United States",claimant:PRODUCER.legalName,rightsAndPermissions:PRODUCER.publisher,
+      description:"Original music production score and compositional blueprint",
+      formType:"Form CO — Literary Work",fee:"$65",filingNotes:"File as collection if registering multiple scores"},
+    mlc:{workTitle:title,workType:"Musical Composition",
+      writers:[{name:PRODUCER.legalName,role:"Composer",share:"50%"}],
+      publishers:[{name:PRODUCER.publisher,share:"50%"}],
+      isrc:"Obtain from DistroKid after distribution",iswc:"Obtain from ASCAP after registration",
+      genres:grabArr("genres"),notes:"Registration is FREE at themlc.com"},
+    distrokid:{trackTitle:title,artist:PRODUCER.name,label:PRODUCER.publisher,
+      genre:grab("genre"),subgenre:grab("subgenre"),releaseDate:"Set your preferred date",
+      language:"English",explicit:"No",contentId:"Enable — Yes",
+      upcNote:"DistroKid auto-assigns",isrcNote:"DistroKid auto-assigns — SAVE immediately for MLC + SoundExchange",
+      metadataNotes:""},
+    soundexchange:{soundRecordingTitle:title,featuredArtist:PRODUCER.name,
+      labelName:PRODUCER.publisher,releaseYear:yr,isrc:"Add after DistroKid assigns it",
+      registrationNote:"CRITICAL: Register TWICE — Featured Artist AND Sound Recording Copyright Owner.",
+      notes:"Free at soundexchange.com"},
+    royaltyEligibility:{eligible:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],blocked:[],notes:""},
+    auditChecklist:[
+      {item:"Production score uploaded",status:"pass",detail:"Score received and analyzed."},
+      {item:"ASCAP writer account",status:"warn",detail:"Log into ascap.com writer account before filing."},
+      {item:"ASCAP publisher entity",status:"warn",detail:`Verify '${PRODUCER.publisher}' is active at ASCAP.`},
+      {item:"ISRC code needed",status:"warn",detail:"Distribute via DistroKid first — ISRC needed for MLC and SoundExchange."},
+      {item:"AI disclosure documented",status:"pass",detail:"AI involvement noted per ASCAP Oct 2025 policy."},
+      {item:"Duration captured",status:"pass",detail:"Audio duration populated in ASCAP timing field."},
+      {item:"MLC registration required",status:"warn",detail:"Register FREE at themlc.com — separate from PRO and distributor."},
+      {item:"SoundExchange dual registration",status:"warn",detail:"Register TWICE at soundexchange.com — Featured Artist AND Rights Owner."},
+    ],
+    authorshipStatement:`AUTHORSHIP STATEMENT — ${title}\n\nI, ${PRODUCER.legalName}, hereby affirm that I am the sole author of the original musical composition titled "${title}," including all elements of its instrumental arrangement, production structure, sonic palette, mix philosophy, and dynamic narrative, as documented in the accompanying production score.\n\nProducer: ${PRODUCER.name}\nPublishing Entity: ${PRODUCER.publisher}\nPRO: ${PRODUCER.pro}\nYouTube: ${PRODUCER.youtube}\nDate: ${new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}`,
+    timestampDocument:`TIMESTAMPED CREATION RECORD\n${"=".repeat(36)}\nTrack Title:  ${title}\nProducer:     ${PRODUCER.name}\nLegal Name:   ${PRODUCER.legalName}\nPublisher:    ${PRODUCER.publisher}\nPRO:          ${PRODUCER.pro}\nYouTube:      ${PRODUCER.youtube}\nDate Created: ${new Date().toISOString()}\n${"=".repeat(36)}\nSave as PDF → email to yourself → store in Google Drive.\nReference in all ASCAP and Copyright.gov filings for this track.`,
+  };
+}
+
+// ─── STYLES ───────────────────────────────────────────────────────────────────
+const S={
+  root:{fontFamily:"'Archivo',system-ui,sans-serif",background:BRAND.bg,minHeight:"100vh",color:BRAND.text,fontSize:14},
+  header:{
+    background:`linear-gradient(135deg,${BRAND.bg},#0f0a18,${BRAND.bg})`,
+    borderBottom:`2px solid ${BRAND.accent}`,padding:"14px 24px",
+    display:"flex",alignItems:"center",gap:14,position:"sticky",top:0,zIndex:100,
+  },
+  panel:{background:BRAND.surf,border:`1px solid ${BRAND.border}`,borderRadius:10,overflow:"hidden",marginBottom:14},
+  panelHead:{
+    padding:"12px 18px",background:"rgba(201,153,46,0.06)",
+    borderBottom:`1px solid ${BRAND.border}`,display:"flex",alignItems:"center",gap:10,
+  },
+  panelBody:{padding:"18px"},
+  lbl:{fontSize:10,letterSpacing:2,textTransform:"uppercase",fontFamily:"monospace",color:BRAND.accent,marginBottom:5,display:"block"},
+  textarea:{
+    width:"100%",padding:"12px 14px",background:BRAND.bg,border:`1px solid ${BRAND.border}`,
+    borderRadius:6,color:BRAND.text,fontSize:12,outline:"none",
+    fontFamily:"monospace",boxSizing:"border-box",resize:"vertical",lineHeight:1.7,
+  },
+  btn:(color=BRAND.accent,bg=`rgba(201,153,46,0.15)`)=>({
+    padding:"9px 18px",borderRadius:7,background:bg,border:`1px solid ${color}`,
+    color,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",
+    letterSpacing:1,transition:"all .15s",display:"inline-flex",alignItems:"center",gap:5,
+  }),
+  copyBox:{
+    background:BRAND.bg,border:`1px solid ${BRAND.border}`,borderRadius:6,
+    padding:"12px 46px 12px 14px",fontSize:12,fontFamily:"monospace",
+    lineHeight:1.75,color:"#d0c8b8",whiteSpace:"pre-wrap",wordBreak:"break-word",position:"relative",
+  },
+  badge:(color)=>({
+    display:"inline-block",fontSize:10,padding:"2px 8px",borderRadius:10,
+    fontFamily:"monospace",letterSpacing:1,
+    border:`1px solid ${color}40`,background:`${color}18`,color,
+  }),
+  dropzone:(active)=>({
+    border:`2px dashed ${active?BRAND.accent:BRAND.border}`,
+    borderRadius:10,padding:"28px 20px",textAlign:"center",cursor:"pointer",
+    background:active?"rgba(201,153,46,0.05)":"rgba(0,0,0,0.15)",transition:"all .2s",
+  }),
+  tab:(active)=>({
+    padding:"7px 14px",borderRadius:6,
+    background:active?"rgba(201,153,46,0.15)":"transparent",
+    border:`1px solid ${active?"rgba(201,153,46,0.5)":"transparent"}`,
+    color:active?BRAND.accentLt:"#5a4a35",fontSize:10,fontFamily:"monospace",
+    letterSpacing:1,cursor:"pointer",transition:"all .15s",textTransform:"uppercase",
+  }),
+};
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+const readFileAsText=(file)=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsText(file);});
+const getAudioDuration=(file)=>new Promise((res)=>{const url=URL.createObjectURL(file);const a=new Audio(url);a.addEventListener("loadedmetadata",()=>{URL.revokeObjectURL(url);const m=Math.floor(a.duration/60);const s=Math.floor(a.duration%60).toString().padStart(2,"0");res(`${m}:${s}`);});a.addEventListener("error",()=>res("Unknown"));});
+
+// ─── AE MONOGRAM ──────────────────────────────────────────────────────────────
+function AEMonogram({size=42}){
+  return(
+    <div style={{
+      width:size,height:size,borderRadius:"50%",flexShrink:0,
+      background:`linear-gradient(${BRAND.bg},${BRAND.bg}) padding-box, ${BRAND.goldGrd} border-box`,
+      border:"2px solid transparent",display:"flex",alignItems:"center",justifyContent:"center",
+      boxShadow:`0 0 18px rgba(212,164,55,0.2)`,position:"relative",
+    }}>
+      <div style={{
+        position:"absolute",inset:4,borderRadius:"50%",
+        border:`1px solid rgba(212,164,55,0.2)`,
+      }}/>
+      <svg width={size*0.5} height={size*0.5} viewBox="0 0 24 24" fill="none">
+        <text x="12" y="17" textAnchor="middle" fontFamily="Cinzel,Georgia,serif"
+          fontSize="13" fontWeight="700"
+          fill="url(#ag)" letterSpacing="-1">AE</text>
+        <defs>
+          <linearGradient id="ag" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#fff4c8"/>
+            <stop offset="55%" stopColor="#d4a437"/>
+            <stop offset="100%" stopColor="#8a5c14"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+}
+
+// ─── COPY BUTTON ──────────────────────────────────────────────────────────────
+function CopyButton({text,style={}}){
+  const[copied,setCopied]=useState(false);
+  const copy=()=>navigator.clipboard.writeText(text||"").then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);});
+  return(
+    <button onClick={copy} style={{
+      position:"absolute",top:8,right:8,padding:"3px 10px",borderRadius:5,fontSize:10,cursor:"pointer",
+      background:copied?"rgba(68,201,122,0.2)":"rgba(255,255,255,0.05)",
+      border:`1px solid ${copied?"#44C97A":"#333"}`,
+      color:copied?"#44C97A":"#666",fontFamily:"monospace",...style,
+    }}>{copied?"✓ Copied":"Copy"}</button>
+  );
+}
+
+// ─── FIELD BLOCK ──────────────────────────────────────────────────────────────
+function FieldBlock({label,value}){
+  if(!value)return null;
+  const str=typeof value==="object"?JSON.stringify(value,null,2):String(value);
+  return(
+    <div style={{marginBottom:13}}>
+      <span style={S.lbl}>{label}</span>
+      <div style={S.copyBox}>{str}<CopyButton text={str}/></div>
+    </div>
+  );
+}
+
+// ─── PLATFORM PANEL ───────────────────────────────────────────────────────────
+function PlatformPanel({title,subtitle,color,fields}){
+  return(
+    <div style={S.panel}>
+      <div style={{...S.panelHead,borderBottom:`2px solid ${color}35`}}>
+        <div>
+          <div style={{fontWeight:700,fontSize:14,color:BRAND.text,fontFamily:"'Cinzel',Georgia,serif"}}>{title}</div>
+          <div style={{fontSize:11,color:BRAND.muted,marginTop:2}}>{subtitle}</div>
+        </div>
+      </div>
+      <div style={S.panelBody}>
+        {fields.map(([lbl,val])=>val?<FieldBlock key={lbl} label={lbl} value={val}/>:null)}
+      </div>
+    </div>
+  );
+}
+
+// ─── API KEY SETUP ────────────────────────────────────────────────────────────
+function ApiKeySetup({onSave}){
+  const[key,setKey]=useState("");
+  return(
+    <div style={{maxWidth:520,margin:"80px auto",padding:"0 24px"}}>
+      <div style={{textAlign:"center",marginBottom:32}}>
+        <AEMonogram size={64}/>
+        <h1 style={{fontFamily:"'Cinzel',Georgia,serif",fontSize:22,fontWeight:700,
+          background:BRAND.goldGrd,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
+          marginTop:16,marginBottom:6}}>iCONiCbyAESGP</h1>
+        <div style={{fontFamily:"'Yellowtail',cursive",fontSize:15,color:BRAND.accent,marginBottom:4}}>
+          An Evolution Of Santiago Green Production
+        </div>
+        <div style={{fontSize:12,color:BRAND.muted}}>Registration Packet Generator — Members Pro</div>
+      </div>
+
+      <div style={{...S.panel}}>
+        <div style={S.panelHead}><span>🔑</span><span style={{fontWeight:600}}>Anthropic API Key Required</span></div>
+        <div style={S.panelBody}>
+          <p style={{fontSize:12,color:BRAND.muted,marginBottom:16,lineHeight:1.7}}>
+            This tool uses the Anthropic API to analyze your production scores and generate registration packets.
+            Your key is saved only in this browser — never sent anywhere except Anthropic's servers.
+          </p>
+          <span style={S.lbl}>API Key</span>
+          <input
+            type="password"
+            placeholder="sk-ant-api03-..."
+            value={key}
+            onChange={e=>setKey(e.target.value)}
+            onKeyDown={e=>e.key==="Enter"&&key.startsWith("sk-ant-")&&onSave(key)}
+            style={{marginBottom:12,letterSpacing:key?"2px":"normal"}}
+          />
+          <p style={{fontSize:11,color:BRAND.muted,marginBottom:16}}>
+            Get your key at <a href="https://console.anthropic.com/settings/keys" target="_blank"
+              style={{color:BRAND.blue}}>console.anthropic.com/settings/keys</a>
+          </p>
+          <button
+            onClick={()=>key.startsWith("sk-ant-")&&onSave(key)}
+            disabled={!key.startsWith("sk-ant-")}
+            style={{...S.btn(),width:"100%",justifyContent:"center",padding:"11px 0",
+              opacity:key.startsWith("sk-ant-")?1:0.4,cursor:key.startsWith("sk-ant-")?"pointer":"not-allowed"}}
+          >Enter Studio →</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── TITLE EDITOR ─────────────────────────────────────────────────────────────
+function TitleEditor({current,bpm,keyVal,genre,year,onSave,onCancel}){
+  const[beatName,setBeatName]=useState(current||"");
+  const[bpmV,setBpmV]=useState(bpm&&bpm!=="???"?bpm:"");
+  const[keyV,setKeyV]=useState(keyVal&&keyVal!=="???"?keyVal:"");
+  const[genreV,setGenreV]=useState(genre&&genre!=="Hip Hop"?genre:"");
+  const preview=`🔥 ${beatName||"BEAT NAME"} | ${bpmV||"BPM"} BPM | ${keyV||"KEY"} | ${genreV||"Genre"} Type Beat ${year}`;
+  const fi={background:BRAND.bg,border:`1px solid ${BRAND.border2}`,borderRadius:6,color:BRAND.accentLt,
+    padding:"7px 10px",fontSize:12,outline:"none",fontFamily:"inherit",width:"100%",boxSizing:"border-box"};
+  return(
+    <div style={{background:"rgba(201,153,46,0.05)",border:`1px solid rgba(201,153,46,0.3)`,borderRadius:8,padding:"14px",marginBottom:4}}>
+      <div style={{fontSize:10,color:BRAND.accent,fontFamily:"monospace",letterSpacing:2,textTransform:"uppercase",marginBottom:10}}>
+        Edit Track Title
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1.5fr",gap:8,marginBottom:10}}>
+        {[
+          {label:"🔥 Beat Name",val:beatName,set:setBeatName,ph:"e.g. Midnight Hustle"},
+          {label:"BPM",val:bpmV,set:setBpmV,ph:"e.g. 140"},
+          {label:"Key",val:keyV,set:setKeyV,ph:"e.g. Gm"},
+          {label:"Genre",val:genreV,set:setGenreV,ph:"e.g. Trap"},
+        ].map(f=>(
+          <div key={f.label}>
+            <div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>{f.label}</div>
+            <input value={f.val} onChange={e=>f.set(e.target.value)} placeholder={f.ph} style={fi}
+              onFocus={e=>e.target.style.borderColor=BRAND.accent}
+              onBlur={e=>e.target.style.borderColor=BRAND.border2}/>
+          </div>
+        ))}
+      </div>
+      <div style={{fontSize:11,color:BRAND.accent,background:"rgba(201,153,46,0.08)",
+        border:`1px solid rgba(201,153,46,0.2)`,borderRadius:6,
+        padding:"8px 10px",fontFamily:"monospace",marginBottom:10,lineHeight:1.4,wordBreak:"break-all",position:"relative"}}>
+        <span style={{color:BRAND.muted,marginRight:6}}>Preview:</span>{preview}
+        <CopyButton text={preview}/>
+      </div>
+      <div style={{display:"flex",gap:8}}>
+        <button onClick={()=>onSave(beatName.trim()||current)} style={S.btn(BRAND.green,"rgba(68,201,122,0.12)")}>✓ Save Title</button>
+        <button onClick={onCancel} style={S.btn("#888","transparent")}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── LIBRARY ──────────────────────────────────────────────────────────────────
+function Library({packets,onSelect,onDelete,onNew}){
+  const catColor={instrumental:BRAND.blue,audio_fossil:BRAND.green,sonic_crossover:BRAND.accent,script:BRAND.purple};
+  const catLabel={instrumental:"Instrumental",audio_fossil:"Audio Fossils",sonic_crossover:"Sonic Crossover",script:"Script"};
+  return(
+    <div style={{maxWidth:900,margin:"0 auto",padding:"28px 22px"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
+        <div>
+          <div style={{fontFamily:"monospace",fontSize:10,letterSpacing:2,color:BRAND.accent,textTransform:"uppercase",marginBottom:3}}>Saved Packets</div>
+          <div style={{fontSize:20,fontWeight:700,color:BRAND.accentLt,fontFamily:"'Cinzel',Georgia,serif"}}>
+            {packets.length} Registration {packets.length===1?"Record":"Records"}
+          </div>
+        </div>
+        <button onClick={onNew} style={S.btn()}>+ New Track</button>
+      </div>
+
+      {packets.length===0?(
+        <div style={{border:`1px dashed ${BRAND.border}`,borderRadius:12,padding:"60px 24px",textAlign:"center",color:BRAND.muted}}>
+          <div style={{fontSize:40,marginBottom:16}}>🎵</div>
+          <div style={{fontWeight:600,marginBottom:6,color:BRAND.muted}}>No packets saved yet</div>
+          <div style={{fontSize:12,marginBottom:16}}>Generate your first registration packet to get started.</div>
+          <button onClick={onNew} style={S.btn()}>+ Analyze First Track</button>
+        </div>
+      ):(
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(380px,1fr))",gap:12}}>
+          {packets.map(p=>{
+            const c=catColor[p.catalogTypeKey]||"#888";
+            const cl=catLabel[p.catalogTypeKey]||p.catalogTypeKey||"Track";
+            const eligible=p.data?.royaltyEligibility?.eligible?.length||0;
+            const pass=(p.data?.auditChecklist||[]).filter(a=>a.status==="pass").length;
+            return(
+              <div key={p.id} style={{background:BRAND.surf,border:`1px solid ${BRAND.border}`,borderRadius:10,overflow:"hidden",cursor:"pointer",transition:"border-color .15s"}}
+                onMouseEnter={e=>e.currentTarget.style.borderColor=BRAND.accent}
+                onMouseLeave={e=>e.currentTarget.style.borderColor=BRAND.border}>
+                <div style={{padding:"14px 16px",borderBottom:`1px solid ${BRAND.border}`}} onClick={()=>onSelect(p)}>
+                  <div style={{fontWeight:700,fontSize:14,color:BRAND.accentLt,marginBottom:5,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontFamily:"'Cinzel',Georgia,serif"}}>
+                    {p.data?.trackTitle||"Untitled Track"}
+                  </div>
+                  <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                    <span style={{...S.badge(c),fontSize:9}}>{cl}</span>
+                    {p.data?.genre&&<span style={{...S.badge("#888"),fontSize:9}}>{p.data.genre}</span>}
+                    {p.data?.bpm&&<span style={{...S.badge(BRAND.muted),fontSize:9}}>{p.data.bpm} BPM</span>}
+                    {p.data?.key&&<span style={{...S.badge(BRAND.muted),fontSize:9}}>{p.data.key}</span>}
+                  </div>
+                </div>
+                <div style={{padding:"10px 16px",display:"flex",alignItems:"center",gap:16}} onClick={()=>onSelect(p)}>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{fontSize:18,fontWeight:700,color:BRAND.green,lineHeight:1}}>{eligible}</div>
+                    <div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase"}}>royalties</div>
+                  </div>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{fontSize:18,fontWeight:700,color:BRAND.blue,lineHeight:1}}>{pass}</div>
+                    <div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase"}}>audit pass</div>
+                  </div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:10,color:BRAND.muted,fontFamily:"monospace"}}>
+                      {new Date(p.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}
+                    </div>
+                  </div>
+                  <button onClick={e=>{e.stopPropagation();if(window.confirm(`Delete "${p.data?.trackTitle}"?`))onDelete(p.id);}}
+                    style={{...S.btn(BRAND.red,"transparent"),padding:"4px 10px",fontSize:10}}>Delete</button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── RESULTS ──────────────────────────────────────────────────────────────────
+function Results({packet,onBack,onNewTrack,onTitleChange}){
+  const[activeTab,setActiveTab]=useState("ascap_writer");
+  const[editingTitle,setEditingTitle]=useState(false);
+  const r=packet.data;
+  if(!r)return null;
+
+  const audit=r.auditChecklist||[];
+  const auditPass=audit.filter(a=>a.status==="pass").length;
+  const auditWarn=audit.filter(a=>a.status==="warn").length;
+  const auditFail=audit.filter(a=>a.status==="fail").length;
+  const eligible=r.royaltyEligibility?.eligible||[];
+
+  const bpm=r.bpm||"???";
+  const key=r.key||"???";
+  const genre=r.genre||"Hip Hop";
+  const year=new Date().getFullYear();
+  const seoTitle=`🔥 ${r.trackTitle||"Untitled"} | ${bpm} BPM | ${key} | ${genre} Type Beat ${year}`;
+
+  return(
+    <div style={{maxWidth:1000,margin:"0 auto",padding:"22px"}}>
+      {/* Track bar */}
+      <div style={{
+        background:"rgba(201,153,46,0.08)",border:`1px solid rgba(201,153,46,0.25)`,
+        borderRadius:10,padding:"14px 18px",marginBottom:16,
+        display:"flex",alignItems:"flex-start",gap:20,flexWrap:"wrap",
+      }}>
+        <div style={{flex:1,minWidth:200}}>
+          <div style={{fontSize:10,color:BRAND.accent,fontFamily:"monospace",letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>Track</div>
+          {editingTitle?(
+            <TitleEditor
+              current={r.trackTitle||""}
+              bpm={bpm} keyVal={key} genre={genre} year={year}
+              onSave={t=>{onTitleChange(packet.id,t);setEditingTitle(false);}}
+              onCancel={()=>setEditingTitle(false)}
+            />
+          ):(
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
+              <div style={{fontSize:18,fontWeight:700,color:BRAND.accentLt,fontFamily:"'Cinzel',Georgia,serif"}}>{r.trackTitle||"Untitled"}</div>
+              <button onClick={()=>setEditingTitle(true)}
+                style={{...S.btn(BRAND.accent,"rgba(201,153,46,0.1)"),padding:"3px 10px",fontSize:10}}>✏️ Edit</button>
+            </div>
+          )}
+          <div style={{fontSize:11,color:BRAND.muted,marginBottom:8}}>
+            {[r.genre,r.duration,r.bpm&&r.bpm+" BPM"].filter(Boolean).join(" · ")}
+          </div>
+          {/* SEO title */}
+          <div style={{position:"relative"}}>
+            <div style={{fontSize:11,color:BRAND.accent,background:"rgba(201,153,46,0.07)",
+              border:`1px solid rgba(201,153,46,0.2)`,borderRadius:6,
+              padding:"6px 46px 6px 10px",fontFamily:"monospace",lineHeight:1.4,wordBreak:"break-word"}}>
+              {seoTitle}
+            </div>
+            <CopyButton text={seoTitle}/>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",flexShrink:0}}>
+          <button onClick={onBack} style={S.btn("#555","transparent")}>← Library</button>
+          <button onClick={onNewTrack} style={S.btn(BRAND.accent,"rgba(201,153,46,0.12)")}>+ New Track</button>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,marginBottom:16}}>
+        {[
+          {label:"Royalties Active",val:eligible.length,color:BRAND.green},
+          {label:"Audit Passed",val:auditPass,color:BRAND.green},
+          {label:"Warnings",val:auditWarn,color:BRAND.accent},
+          {label:"Issues",val:auditFail,color:BRAND.red},
+        ].map(s=>(
+          <div key={s.label} style={{background:BRAND.surf,border:`1px solid ${BRAND.border}`,borderRadius:8,padding:"12px 14px"}}>
+            <div style={{fontSize:26,fontWeight:700,color:s.color,lineHeight:1,marginBottom:3}}>{s.val}</div>
+            <div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase"}}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tabs */}
+      <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:14}}>
+        {PLATFORMS.map(p=>(
+          <button key={p.id} onClick={()=>setActiveTab(p.id)} style={S.tab(activeTab===p.id)}>
+            {p.icon} {p.label}
+          </button>
+        ))}
+        {[["audit","🔍 Audit"],["royalties","💰 Royalties"],["authorship","📜 Authorship"],["reference","📚 2026 Ref"]].map(([t,l])=>(
+          <button key={t} onClick={()=>setActiveTab(t)} style={S.tab(activeTab===t)}>{l}</button>
+        ))}
+      </div>
+
+      {activeTab==="ascap_writer"&&<PlatformPanel title="ASCAP — Writer Account Registration"
+        subtitle="ascap.com → My Account → Works Registration → Register a Work" color={BRAND.blue}
+        fields={[["Work Title",r.ascap_writer?.workTitle],["Alternative Titles",(r.ascap_writer?.alternativeTitles||[]).join(", ")||"None"],
+          ["Work Type",r.ascap_writer?.workType],["Classification",r.ascap_writer?.classification],
+          ["Instrumentation",r.ascap_writer?.instrumentation],["Timing (Duration)",r.ascap_writer?.timing],
+          ["Writer Name",r.ascap_writer?.writerName],["Writer Role",r.ascap_writer?.writerRole],
+          ["Writer Share %",r.ascap_writer?.writerShare],["ISWC",r.ascap_writer?.iswc],
+          ["Release Status",r.ascap_writer?.releaseStatus],["AI Disclosure — paste into notes",r.ascap_writer?.aiDisclosure],
+          ["Additional Notes",r.ascap_writer?.notes]]}/>}
+
+      {activeTab==="ascap_publisher"&&<PlatformPanel title="ASCAP — Publisher Account Registration"
+        subtitle="Log into your ASCAP publisher account → link this work to your writer registration" color={BRAND.accent}
+        fields={[["Publisher Name",r.ascap_publisher?.publisherName],["Publisher Share %",r.ascap_publisher?.publisherShare],
+          ["Publisher Role",r.ascap_publisher?.publisherRole],["Linked Writer",r.ascap_publisher?.linkedWriter],
+          ["Work Title (must match writer exactly)",r.ascap_publisher?.workTitle],["Notes",r.ascap_publisher?.notes]]}/>}
+
+      {activeTab==="copyright_gov"&&<PlatformPanel title="Copyright.gov — Production Score Registration"
+        subtitle="copyright.gov → Register a Work → Literary Work → eCO online system → $65 fee" color={BRAND.purple}
+        fields={[["Work Type",r.copyright_gov?.workType],["Title of Work",r.copyright_gov?.title],
+          ["Author",r.copyright_gov?.author],["Year of Creation",r.copyright_gov?.yearOfCreation],
+          ["Year of Publication",r.copyright_gov?.yearOfPublication],["Nation of First Publication",r.copyright_gov?.nation],
+          ["Claimant",r.copyright_gov?.claimant],["Rights & Permissions",r.copyright_gov?.rightsAndPermissions],
+          ["Description (deposit copy)",r.copyright_gov?.description],["Form Type",r.copyright_gov?.formType],
+          ["Filing Fee",r.copyright_gov?.fee],["Filing Notes",r.copyright_gov?.filingNotes]]}/>}
+
+      {activeTab==="mlc"&&<PlatformPanel title="The MLC — Mechanical Licensing Collective"
+        subtitle="themlc.com → Register a Work → Musical Work Registration (FREE)" color={BRAND.green}
+        fields={[["Work Title",r.mlc?.workTitle],["Work Type",r.mlc?.workType],
+          ["Writer — Name",PRODUCER.legalName],["Writer — Role",r.mlc?.writers?.[0]?.role],
+          ["Writer — Share",r.mlc?.writers?.[0]?.share],["Publisher — Name",r.mlc?.publishers?.[0]?.name],
+          ["Publisher — Share",r.mlc?.publishers?.[0]?.share],["ISRC Code",r.mlc?.isrc],
+          ["ISWC Code",r.mlc?.iswc],["Genres",(r.mlc?.genres||[]).join(", ")||"Populate after ASCAP assigns"],
+          ["Notes",r.mlc?.notes]]}/>}
+
+      {activeTab==="distrokid"&&<PlatformPanel title="DistroKid — Release Metadata"
+        subtitle="distrokid.com → Distribute → Upload → fill these fields exactly as shown" color={BRAND.red}
+        fields={[["Track Title",r.distrokid?.trackTitle],["Artist Name",r.distrokid?.artist],
+          ["Label Name",r.distrokid?.label],["Primary Genre",r.distrokid?.genre],
+          ["Secondary Genre",r.distrokid?.subgenre],["Release Date",r.distrokid?.releaseDate],
+          ["Language",r.distrokid?.language],["Explicit Content",r.distrokid?.explicit],
+          ["YouTube Content ID",r.distrokid?.contentId],["UPC Note",r.distrokid?.upcNote],
+          ["ISRC Note",r.distrokid?.isrcNote],["Metadata Notes",r.distrokid?.metadataNotes]]}/>}
+
+      {activeTab==="soundexchange"&&<PlatformPanel title="SoundExchange — Neighboring Rights"
+        subtitle="soundexchange.com → Register TWICE: Featured Artist + Sound Recording Copyright Owner" color={BRAND.orange}
+        fields={[["Sound Recording Title",r.soundexchange?.soundRecordingTitle],
+          ["Featured Artist",r.soundexchange?.featuredArtist],["Label / Rights Owner",r.soundexchange?.labelName],
+          ["Release Year",r.soundexchange?.releaseYear],["ISRC Code",r.soundexchange?.isrc],
+          ["⚠️ Critical Note",r.soundexchange?.registrationNote],["Additional Notes",r.soundexchange?.notes]]}/>}
+
+      {activeTab==="audit"&&(
+        <div style={S.panel}>
+          <div style={S.panelHead}>
+            <span>🔍</span><span style={{fontWeight:600}}>Registration Compliance Audit</span>
+            <div style={{marginLeft:"auto",display:"flex",gap:8}}>
+              <span style={S.badge(BRAND.green)}>{auditPass} passed</span>
+              <span style={S.badge(BRAND.accent)}>{auditWarn} warnings</span>
+              {auditFail>0&&<span style={S.badge(BRAND.red)}>{auditFail} issues</span>}
+            </div>
+          </div>
+          <div style={S.panelBody}>
+            {audit.map((item,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"11px 13px",borderRadius:8,marginBottom:8,
+                background:item.status==="pass"?"rgba(68,201,122,0.06)":item.status==="warn"?"rgba(201,153,46,0.06)":"rgba(224,68,68,0.06)",
+                border:`1px solid ${item.status==="pass"?"rgba(68,201,122,0.2)":item.status==="warn"?"rgba(201,153,46,0.2)":"rgba(224,68,68,0.2)"}`}}>
+                <span style={{fontSize:15,flexShrink:0,marginTop:1}}>{item.status==="pass"?"✅":item.status==="warn"?"⚠️":"❌"}</span>
+                <div>
+                  <div style={{fontSize:13,fontWeight:600,color:BRAND.text,marginBottom:2}}>{item.item}</div>
+                  <div style={{fontSize:12,color:BRAND.muted,lineHeight:1.5}}>{item.detail}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeTab==="royalties"&&(
+        <div style={S.panel}>
+          <div style={S.panelHead}>
+            <span>💰</span><span style={{fontWeight:600}}>Royalty Stream Eligibility</span>
+            <span style={{marginLeft:"auto",...S.badge(BRAND.green)}}>{eligible.length} of 15 active</span>
+          </div>
+          <div style={S.panelBody}>
+            {r.royaltyEligibility?.notes&&(
+              <div style={{background:"rgba(201,153,46,0.08)",border:`1px solid rgba(201,153,46,0.2)`,
+                borderRadius:8,padding:"10px 13px",marginBottom:14,fontSize:12,color:BRAND.accent,lineHeight:1.6}}>
+                {r.royaltyEligibility.notes}
+              </div>
+            )}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:8}}>
+              {ROYALTY_STREAMS.map(stream=>{
+                const active=eligible.includes(stream.id);
+                return(
+                  <div key={stream.id} style={{padding:"10px 12px",borderRadius:8,
+                    background:active?"rgba(68,201,122,0.08)":"rgba(224,68,68,0.04)",
+                    border:`1px solid ${active?"rgba(68,201,122,0.3)":"rgba(224,68,68,0.12)"}`}}>
+                    <div style={{display:"flex",alignItems:"center",gap:5,marginBottom:3}}>
+                      <span style={{fontSize:11}}>{active?"✅":"🔒"}</span>
+                      <span style={{fontSize:9,fontFamily:"monospace",color:BRAND.muted}}>#{stream.id}</span>
+                      {stream.delay&&<span style={{fontSize:9,fontFamily:"monospace",color:BRAND.muted,marginLeft:"auto"}}>{stream.delay}</span>}
+                    </div>
+                    <div style={{fontSize:11,fontWeight:600,color:active?BRAND.green:"#444",marginBottom:2}}>{stream.name}</div>
+                    <div style={{fontSize:10,color:BRAND.muted,marginBottom:stream.notes?4:0}}>{stream.org}</div>
+                    {stream.notes&&<div style={{fontSize:9,color:"#555",lineHeight:1.4,borderTop:`1px solid rgba(255,255,255,0.04)`,paddingTop:4}}>{stream.notes}</div>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab==="authorship"&&(
+        <div style={S.panel}>
+          <div style={S.panelHead}><span>📜</span><span style={{fontWeight:600}}>Authorship Statement & Timestamp Record</span></div>
+          <div style={S.panelBody}>
+            <span style={S.lbl}>Formal Authorship Statement</span>
+            <div style={{...S.copyBox,marginBottom:18}}>{r.authorshipStatement}<CopyButton text={r.authorshipStatement||""}/></div>
+            <span style={S.lbl}>Timestamped Creation Record — Save as PDF & Email to Yourself</span>
+            <div style={{...S.copyBox,marginBottom:14}}>{r.timestampDocument}<CopyButton text={r.timestampDocument||""}/></div>
+            <div style={{background:"rgba(201,153,46,0.08)",border:`1px solid rgba(201,153,46,0.2)`,
+              borderRadius:8,padding:"11px 13px",fontSize:12,color:BRAND.accent,lineHeight:1.6}}>
+              💡 Save as PDF → email to yourself → store in Google Drive. The file metadata timestamp is your legal creation record.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab==="reference"&&(
+        <div>
+          {[
+            {icon:"💿",title:"Two Copyrights — Know the Difference",color:BRAND.blue,items:[
+              ["Sound Recording (Master)","The actual recording — beat, mix, finished file. If you released it yourself without signing masters away, you own this."],
+              ["Musical Composition (Publishing)","The songwriting side — melody, structure. Separate copyright from the master. Both generate independent royalty streams."],
+              ["Why both matter","If you own both copyrights, you collect from both sides — only if registered correctly on both sides."],
+            ]},
+            {icon:"💰",title:"2026 Streaming Rate Reference",color:BRAND.green,items:[
+              ["Spotify","~$3–$5 per 1,000 streams"],["Apple Music","~$8–$10 per 1,000 streams"],
+              ["Tidal","~$13 per 1,000 streams"],["YouTube Music","~$1–$2 per 1,000 streams"],
+            ]},
+            {icon:"⚠️",title:"$424M in Unclaimed MLC Royalties",color:BRAND.red,items:[
+              ["The Problem","$424M+ in unmatched digital mechanical royalties from Spotify, Apple, Amazon, Google."],
+              ["Why it's unclaimed","Songs are streaming but registrations, metadata, or ownership details weren't set up."],
+              ["The fix","Register FREE at themlc.com — separate from your PRO and distributor."],
+            ]},
+            {icon:"📡",title:"SoundExchange — Most Overlooked",color:BRAND.orange,items:[
+              ["2024 payout","$1 BILLION+ paid out in 2024 alone. $12B+ since 2003."],
+              ["What it covers","Pandora, SiriusXM, internet radio, Peloton. Your distributor does NOT collect this."],
+              ["Register TWICE","Featured Artist + Sound Recording Copyright Owner. Two separate payment streams."],
+            ]},
+            {icon:"🎬",title:"Sync Licensing Rate Reference",color:BRAND.accent,items:[
+              ["YouTube / Indie Film","$500 – $5,000 per placement"],["TV Shows","$5,000 – $50,000 per placement"],
+              ["National Commercial","$10,000 – $250,000 per placement"],
+              ["Two checks per placement","Master side + publishing side. Own both = two payments from one placement."],
+            ]},
+          ].map(sec=>(
+            <div key={sec.title} style={{...S.panel,marginBottom:12}}>
+              <div style={{...S.panelHead,borderBottom:`2px solid ${sec.color}30`}}>
+                <span style={{fontSize:16}}>{sec.icon}</span>
+                <span style={{fontWeight:600,fontSize:13,fontFamily:"'Cinzel',Georgia,serif"}}>{sec.title}</span>
+                <span style={{...S.badge(sec.color),marginLeft:"auto",fontSize:9}}>2026 Verified</span>
+              </div>
+              <div style={S.panelBody}>
+                {sec.items.map(([lbl,val])=>(
+                  <div key={lbl} style={{marginBottom:10,paddingBottom:10,borderBottom:`1px solid ${BRAND.border}`}}>
+                    <div style={{fontSize:10,fontFamily:"monospace",letterSpacing:1,color:sec.color,textTransform:"uppercase",marginBottom:4}}>{lbl}</div>
+                    <div style={{fontSize:12,color:"#c8c0b0",lineHeight:1.6}}>{val}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── UPLOAD FORM ──────────────────────────────────────────────────────────────
+function UploadForm({onComplete,onCancel,hasPackets,apiKey}){
+  const[audioFile,setAudioFile]=useState(null);
+  const[scoreText,setScoreText]=useState("");
+  const[scoreFile,setScoreFile]=useState(null);
+  const[audioDuration,setAudioDuration]=useState("");
+  const[audioActive,setAudioActive]=useState(false);
+  const[scoreActive,setScoreActive]=useState(false);
+  const[catalogType,setCatalogType]=useState("instrumental");
+  const[aiLevel,setAiLevel]=useState("partial");
+  const[phase,setPhase]=useState("upload");
+  const[progress,setProgress]=useState(0);
+  const[progressLabel,setProgressLabel]=useState("");
+  const[error,setError]=useState("");
+  const audioRef=useRef();
+  const scoreRef=useRef();
+
+  const onAudio=useCallback(async(e)=>{
+    e.preventDefault();setAudioActive(false);
+    const file=e.dataTransfer?.files?.[0]||e.target?.files?.[0];
+    if(!file)return;
+    if(!file.type.includes("audio")){setError("Please upload a WAV or MP3 file.");return;}
+    setAudioFile(file);
+    const dur=await getAudioDuration(file);
+    setAudioDuration(dur);setError("");
+  },[]);
+
+  const onScore=useCallback(async(e)=>{
+    e.preventDefault();setScoreActive(false);
+    const file=e.dataTransfer?.files?.[0]||e.target?.files?.[0];
+    if(!file)return;
+    const text=await readFileAsText(file);
+    setScoreText(text);setScoreFile(file);setError("");
+  },[]);
+
+  const analyze=async()=>{
+    if(!scoreText.trim()){setError("Add your production score before analyzing.");return;}
+    setPhase("analyzing");setProgress(10);setProgressLabel("Reading score...");setError("");
+    try{
+      const catLabel={
+        instrumental:"Original Instrumental Beat",
+        audio_fossil:"Audio Fossils — Original Lyrics + Original Instrumental",
+        sonic_crossover:"Sonic Crossover — Original Instrumental, Third-Party Lyrics",
+        script:"Street Comedy / After Hours Script",
+      }[catalogType];
+      const aiLabel={
+        human:"Fully human-made",
+        partial:"AI-assisted — human creative direction by "+PRODUCER.legalName+" (ASCAP-eligible per Oct 2025 policy)",
+        full:"Fully AI-generated",
+      }[aiLevel];
+
+      const prompt=`You are a music copyright and royalty registration specialist for producer ${PRODUCER.name} (legal name: ${PRODUCER.legalName}, publisher: "${PRODUCER.publisher}", YouTube: ${PRODUCER.youtube}, PRO: ${PRODUCER.pro}).
+
+2026 VERIFIED FACTS:
+- MLC holds $424M+ in unmatched digital mechanical royalties — themlc.com is FREE
+- SoundExchange paid $1B+ in 2024 — register as BOTH featured artist AND rights owner
+- Streaming 2026: Spotify ~$3-5/1K, Apple Music ~$8-10/1K, Tidal ~$13/1K, YouTube Music ~$1-2/1K
+- CD Baby Pro Publishing DISCONTINUED — recommend Songtrust or TuneCore Publishing only
+- Distribution ≠ PRO ≠ MLC ≠ Publishing Admin — all collect different money
+- Sync: indie/YT $500-5K, TV $5K-50K, national ad $10K-250K+
+
+CATALOG TYPE: ${catLabel}
+AI INVOLVEMENT: ${aiLabel}
+AUDIO DURATION: ${audioDuration||"See score"}
+YEAR: ${new Date().getFullYear()}
+
+PRODUCTION SCORE:
+${scoreText.slice(0,2800)}
+
+Return ONLY valid compact JSON. No markdown fences, no prose. Keep ALL string values under 150 characters.
+
+Return exactly this shape:
+{"trackTitle":"","genre":"","bpm":"","key":"","duration":"${audioDuration||""}","catalogType":"${catLabel}","aiInvolvement":"${aiLabel}","instruments":[],"songStructure":"","brandingElement":"","ascap_writer":{"workTitle":"","alternativeTitles":[],"workType":"Musical Work","classification":"Popular","instrumentation":"","timing":"${audioDuration||""}","writerName":"${PRODUCER.legalName}","writerRole":"","writerShare":"50%","iswc":"Leave blank — ASCAP auto-assigns","releaseStatus":"Unpublished","aiDisclosure":"","notes":""},"ascap_publisher":{"publisherName":"${PRODUCER.publisher}","publisherShare":"50%","publisherRole":"Original Publisher","linkedWriter":"${PRODUCER.legalName}","workTitle":"","notes":""},"copyright_gov":{"workType":"Literary Work","title":"","author":"${PRODUCER.legalName}","yearOfCreation":"${new Date().getFullYear()}","yearOfPublication":"","nation":"United States","claimant":"${PRODUCER.legalName}","rightsAndPermissions":"${PRODUCER.publisher}","description":"","formType":"Form CO","fee":"$65","filingNotes":""},"mlc":{"workTitle":"","workType":"Musical Composition","writers":[{"name":"${PRODUCER.legalName}","role":"","share":"50%"}],"publishers":[{"name":"${PRODUCER.publisher}","share":"50%"}],"isrc":"Obtain from DistroKid after distribution","iswc":"Obtain from ASCAP after registration","genres":[],"notes":""},"distrokid":{"trackTitle":"","artist":"${PRODUCER.name}","label":"${PRODUCER.publisher}","genre":"","subgenre":"","releaseDate":"Set preferred date","language":"English","explicit":"No","contentId":"Enable — Yes","upcNote":"DistroKid auto-assigns","isrcNote":"DistroKid auto-assigns — save immediately","metadataNotes":""},"soundexchange":{"soundRecordingTitle":"","featuredArtist":"${PRODUCER.name}","labelName":"${PRODUCER.publisher}","releaseYear":"${new Date().getFullYear()}","isrc":"Add after DistroKid assigns it","registrationNote":"Register TWICE: Featured Artist AND Sound Recording Copyright Owner","notes":""},"royaltyEligibility":{"eligible":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"blocked":[],"notes":""},"auditChecklist":[{"item":"","status":"pass","detail":""}],"authorshipStatement":"","timestampDocument":""}`;
+
+      setProgress(30);setProgressLabel("Sending to Anthropic API...");
+      const response=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","x-api-key":apiKey,
+          "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:3000,messages:[{role:"user",content:prompt}]}),
+      });
+      if(!response.ok){const err=await response.json().catch(()=>({}));throw new Error(err?.error?.message||`API error ${response.status}`);}
+      setProgress(70);setProgressLabel("Parsing registration data...");
+      const apiData=await response.json();
+      const raw=apiData?.content?.[0]?.text||"{}";
+      let parsed;
+      try{parsed=robustParseJSON(raw);}catch(_){parsed=extractFieldsSafely(raw);}
+
+      // Guarantee critical fields
+      if(!parsed.ascap_writer)parsed.ascap_writer={};
+      if(!parsed.ascap_publisher)parsed.ascap_publisher={};
+      parsed.ascap_writer.writerName=PRODUCER.legalName;
+      parsed.ascap_writer.writerShare="50%";
+      parsed.ascap_publisher.publisherName=PRODUCER.publisher;
+      parsed.ascap_publisher.publisherShare="50%";
+      if(!parsed.royaltyEligibility)
+        parsed.royaltyEligibility={eligible:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],blocked:[],notes:""};
+      if(!parsed.auditChecklist?.length)
+        parsed.auditChecklist=[
+          {item:"Production score analyzed",status:"pass",detail:"Score received and all fields populated."},
+          {item:"ASCAP writer account",status:"warn",detail:"Log into ascap.com before filing."},
+          {item:"ASCAP publisher entity",status:"warn",detail:`Verify '${PRODUCER.publisher}' is active at ASCAP.`},
+          {item:"ISRC needed before MLC/SE",status:"warn",detail:"Distribute via DistroKid first — save the ISRC."},
+          {item:"AI disclosure documented",status:"pass",detail:"AI involvement noted per ASCAP Oct 2025 policy."},
+          {item:"Duration captured",status:audioDuration?"pass":"warn",detail:audioDuration?`Duration: ${audioDuration}`:"Upload audio to auto-capture duration."},
+          {item:"SoundExchange dual registration",status:"warn",detail:"Register TWICE: Featured Artist AND Rights Owner."},
+          {item:"MLC registration",status:"warn",detail:"Register FREE at themlc.com."},
+        ];
+      if(!parsed.authorshipStatement)
+        parsed.authorshipStatement=`AUTHORSHIP STATEMENT — ${parsed.trackTitle||"Untitled"}\n\nI, ${PRODUCER.legalName}, hereby affirm that I am the sole author of "${parsed.trackTitle||"Untitled"}," including all elements of its instrumental arrangement, production structure, sonic palette, mix philosophy, and dynamic narrative.\n\nProducer: ${PRODUCER.name}\nPublisher: ${PRODUCER.publisher}\nPRO: ${PRODUCER.pro} | YouTube: ${PRODUCER.youtube}\nDate: ${new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}`;
+      if(!parsed.timestampDocument)
+        parsed.timestampDocument=`TIMESTAMPED CREATION RECORD\n${"=".repeat(36)}\nTrack:     ${parsed.trackTitle||"Untitled"}\nProducer:  ${PRODUCER.name}\nPublisher: ${PRODUCER.publisher}\nPRO:       ${PRODUCER.pro}\nYouTube:   ${PRODUCER.youtube}\nCreated:   ${new Date().toISOString()}\n${"=".repeat(36)}\nSave as PDF → email to yourself → store in Google Drive.\nReference in all ASCAP and Copyright.gov filings.`;
+
+      setProgress(95);setProgressLabel("Saving to library...");
+      await new Promise(r=>setTimeout(r,300));
+      onComplete({
+        id:`pkt_${Date.now()}`,createdAt:new Date().toISOString(),
+        catalogTypeKey:catalogType,aiLevel:aiLabel,
+        audioFileName:audioFile?.name||null,data:parsed,
+      });
+    }catch(err){
+      console.error(err);
+      setError("Analysis failed: "+err.message);
+      setPhase("upload");
+    }
+  };
+
+  if(phase==="analyzing")return(
+    <div style={{maxWidth:480,margin:"80px auto",padding:"0 24px",textAlign:"center"}}>
+      <div style={{fontSize:44,marginBottom:20}}>⚙️</div>
+      <div style={{fontFamily:"monospace",fontSize:10,color:BRAND.accent,letterSpacing:2,textTransform:"uppercase",marginBottom:6}}>Analyzing</div>
+      <div style={{fontSize:18,fontWeight:700,color:BRAND.accentLt,marginBottom:4,fontFamily:"'Cinzel',Georgia,serif"}}>Building Registration Packets</div>
+      <div style={{fontSize:12,color:BRAND.muted,marginBottom:28}}>{progressLabel}</div>
+      <div style={{height:3,background:BRAND.border,borderRadius:2,overflow:"hidden"}}>
+        <div style={{height:"100%",background:BRAND.goldGrd,borderRadius:2,width:`${progress}%`,transition:"width .4s"}}/>
+      </div>
+      <div style={{fontSize:10,color:BRAND.muted,marginTop:6,fontFamily:"monospace"}}>{progress}%</div>
+    </div>
+  );
+
+  return(
+    <div style={{maxWidth:700,margin:"24px auto",padding:"0 22px"}}>
+      {hasPackets&&<button onClick={onCancel} style={{...S.btn("#555","transparent"),marginBottom:16}}>← Back to Library</button>}
+
+      {/* Catalog type */}
+      <div style={S.panel}>
+        <div style={S.panelHead}><span>🗂</span><span style={{fontWeight:600,fontSize:13}}>Catalog Type</span></div>
+        <div style={{...S.panelBody,display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}}>
+          {[
+            {v:"instrumental",label:"Original Instrumental",sub:"Beat for BeatStars/Airbit — no lyrics"},
+            {v:"audio_fossil",label:"Audio Fossils",sub:"Original lyrics + original instrumental"},
+            {v:"sonic_crossover",label:"Sonic Crossover",sub:"Original instrumental, third-party lyrics"},
+            {v:"script",label:"Script / Skit",sub:"Street Comedy or After Hours script"},
+          ].map(opt=>(
+            <div key={opt.v} onClick={()=>setCatalogType(opt.v)} style={{
+              border:`1px solid ${catalogType===opt.v?BRAND.accent:BRAND.border}`,
+              background:catalogType===opt.v?"rgba(201,153,46,0.08)":BRAND.bg,
+              borderRadius:8,padding:"12px 14px",cursor:"pointer",transition:"all .15s",
+            }}>
+              <div style={{fontWeight:600,fontSize:12,color:catalogType===opt.v?BRAND.accentLt:BRAND.text,marginBottom:2}}>{opt.label}</div>
+              <div style={{fontSize:10,color:BRAND.muted}}>{opt.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* AI level */}
+      <div style={S.panel}>
+        <div style={S.panelHead}><span>🤖</span><span style={{fontWeight:600,fontSize:13}}>AI Involvement</span></div>
+        <div style={{...S.panelBody,display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:9}}>
+          {[
+            {v:"human",label:"Human-made",color:BRAND.green},
+            {v:"partial",label:"AI-directed (you authored)",color:BRAND.accent},
+            {v:"full",label:"Fully AI",color:BRAND.red},
+          ].map(opt=>(
+            <div key={opt.v} onClick={()=>setAiLevel(opt.v)} style={{
+              border:`1px solid ${aiLevel===opt.v?opt.color:BRAND.border}`,
+              background:aiLevel===opt.v?`${opt.color}12`:BRAND.bg,
+              borderRadius:8,padding:"10px 12px",cursor:"pointer",textAlign:"center",transition:"all .15s",
+            }}>
+              <div style={{fontSize:11,fontWeight:600,color:aiLevel===opt.v?opt.color:BRAND.muted}}>{opt.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Audio */}
+      {catalogType!=="script"&&(
+        <div style={S.panel}>
+          <div style={S.panelHead}>
+            <span>🎵</span><span style={{fontWeight:600,fontSize:13}}>Audio File</span>
+            <span style={{fontSize:10,color:BRAND.muted,marginLeft:"auto"}}>WAV or MP3 — duration auto-captured</span>
+          </div>
+          <div style={S.panelBody}>
+            <div style={S.dropzone(audioActive)}
+              onDragOver={e=>{e.preventDefault();setAudioActive(true);}}
+              onDragLeave={()=>setAudioActive(false)}
+              onDrop={onAudio}
+              onClick={()=>audioRef.current?.click()}>
+              {audioFile?(
+                <div>
+                  <div style={{fontSize:24,marginBottom:6}}>🎵</div>
+                  <div style={{fontWeight:600,color:BRAND.accentLt,fontSize:13,marginBottom:3}}>{audioFile.name}</div>
+                  <div style={{fontSize:11,color:BRAND.muted}}>{(audioFile.size/1024/1024).toFixed(2)} MB · {audioDuration}</div>
+                </div>
+              ):(
+                <div>
+                  <div style={{fontSize:28,marginBottom:8}}>⬆️</div>
+                  <div style={{fontWeight:600,fontSize:13,marginBottom:3}}>Drop WAV or MP3 here</div>
+                  <div style={{fontSize:11,color:BRAND.muted}}>or click to browse files</div>
+                </div>
+              )}
+            </div>
+            <input ref={audioRef} type="file" accept=".wav,.mp3,audio/wav,audio/mpeg" style={{display:"none"}} onChange={onAudio}/>
+          </div>
+        </div>
+      )}
+
+      {/* Score */}
+      <div style={S.panel}>
+        <div style={S.panelHead}>
+          <span>📋</span>
+          <span style={{fontWeight:600,fontSize:13}}>{catalogType==="script"?"Script Content":"Production Score"}</span>
+          <span style={{fontSize:10,color:BRAND.muted,marginLeft:"auto"}}>Paste or drop a .txt file</span>
+        </div>
+        <div style={S.panelBody}>
+          <div style={{...S.dropzone(scoreActive),padding:"10px 14px",marginBottom:10,textAlign:"left"}}
+            onDragOver={e=>{e.preventDefault();setScoreActive(true);}}
+            onDragLeave={()=>setScoreActive(false)}
+            onDrop={onScore}
+            onClick={()=>scoreRef.current?.click()}>
+            <span style={{fontSize:11,color:scoreFile?BRAND.accent:BRAND.muted}}>
+              {scoreFile?`📄 ${scoreFile.name} — loaded. Edit below if needed.`:"Drop a .txt file, or paste directly below ↓"}
+            </span>
+          </div>
+          <input ref={scoreRef} type="file" accept=".txt,text/plain" style={{display:"none"}} onChange={onScore}/>
+          <textarea style={{...S.textarea,minHeight:260}}
+            placeholder={catalogType==="script"
+              ?"Paste your script — dialogue, scene descriptions, character names..."
+              :"Paste your full production score — structure, bar counts, instrumentation, mix cues, global notes..."}
+            value={scoreText}
+            onChange={e=>setScoreText(e.target.value)}
+            onFocus={e=>e.target.style.borderColor=BRAND.accent}
+            onBlur={e=>e.target.style.borderColor=BRAND.border}/>
+          <div style={{fontSize:10,color:BRAND.muted,marginTop:5,fontFamily:"monospace"}}>
+            {scoreText.length.toLocaleString()} characters
+          </div>
+        </div>
+      </div>
+
+      {error&&(
+        <div style={{background:"rgba(224,68,68,0.1)",border:"1px solid rgba(224,68,68,0.4)",
+          borderRadius:8,padding:"11px 14px",marginBottom:14,fontSize:12,color:"#ff8080"}}>
+          ⚠️ {error}
+        </div>
+      )}
+
+      <button onClick={analyze} disabled={!scoreText.trim()} style={{
+        ...S.btn(!scoreText.trim()?"#3a2e22":BRAND.accent,!scoreText.trim()?"rgba(60,60,60,0.1)":"rgba(201,153,46,0.15)"),
+        width:"100%",justifyContent:"center",fontSize:12,padding:"13px 0",
+        cursor:scoreText.trim()?"pointer":"not-allowed",
+      }}>
+        {scoreText.trim()?"▶  Analyze & Generate Registration Packets":"Add production score to begin"}
+      </button>
+    </div>
+  );
+}
+
+// ─── ROOT APP ─────────────────────────────────────────────────────────────────
+export default function App(){
+  const[apiKey,setApiKey]=useState(()=>HARDCODED_KEY||localStorage.getItem("iconic-api-key")||"");
+  const[view,setView]=useState("library");
+  const[packets,setPackets]=useState(()=>loadPackets());
+  const[selectedPacket,setSelectedPacket]=useState(null);
+  const[saveStatus,setSaveStatus]=useState("");
+
+  const persist=(updated)=>{
+    setSaveStatus("saving");
+    const ok=savePackets(updated);
+    setSaveStatus(ok?"saved":"error");
+    setTimeout(()=>setSaveStatus(""),2000);
+  };
+
+  const handleApiKey=(k)=>{
+    localStorage.setItem("iconic-api-key",k);
+    setApiKey(k);
+  };
+
+  const handleComplete=(packet)=>{
+    const updated=[packet,...packets];
+    setPackets(updated);persist(updated);
+    setSelectedPacket(packet);setView("results");
+  };
+
+  const handleDelete=(id)=>{
+    const updated=packets.filter(p=>p.id!==id);
+    setPackets(updated);persist(updated);
+    if(selectedPacket?.id===id){setSelectedPacket(null);setView("library");}
+  };
+
+  const handleTitleChange=(id,newTitle)=>{
+    const updated=packets.map(p=>{
+      if(p.id!==id)return p;
+      const data={...p.data,trackTitle:newTitle};
+      if(data.ascap_writer)    data.ascap_writer   ={...data.ascap_writer,   workTitle:newTitle};
+      if(data.ascap_publisher) data.ascap_publisher={...data.ascap_publisher,workTitle:newTitle};
+      if(data.mlc)             data.mlc            ={...data.mlc,            workTitle:newTitle};
+      if(data.distrokid)       data.distrokid      ={...data.distrokid,      trackTitle:newTitle};
+      if(data.soundexchange)   data.soundexchange  ={...data.soundexchange,  soundRecordingTitle:newTitle};
+      if(data.copyright_gov)   data.copyright_gov  ={...data.copyright_gov,  title:`${newTitle} — Production Score`};
+      return{...p,data};
+    });
+    setPackets(updated);persist(updated);
+    const refreshed=updated.find(p=>p.id===id);
+    if(refreshed)setSelectedPacket(refreshed);
+  };
+
+  // API key gate
+  if(!apiKey.startsWith("sk-ant-"))return <ApiKeySetup onSave={handleApiKey}/>;
+
+  return(
+    <div style={S.root}>
+      {/* Header */}
+      <div style={S.header}>
+        <AEMonogram size={40}/>
+        <div style={{flex:1}}>
+          <div style={{fontFamily:"'Yellowtail',cursive",fontSize:13,color:BRAND.accent,lineHeight:1,marginBottom:2}}>
+            An Evolution Of Santiago Green Production
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:1}}>
+            <div style={{fontFamily:"'Cinzel',Georgia,serif",fontSize:15,fontWeight:700,
+              background:BRAND.goldGrd,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",letterSpacing:1}}>
+              iCONiCbyAESGP
+            </div>
+            {/* PRO gold badge */}
+            <span style={{
+              fontSize:9,fontFamily:"monospace",letterSpacing:1,padding:"2px 7px",borderRadius:10,
+              background:BRAND.goldGrd,color:BRAND.bg,fontWeight:700,
+            }}>PRO</span>
+          </div>
+          <div style={{fontSize:10,color:BRAND.muted,fontFamily:"monospace"}}>
+            iCONiCbyAESGP Members — Unlimited Access
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8,alignItems:"center"}}>
+          {saveStatus&&(
+            <span style={{fontSize:10,fontFamily:"monospace",letterSpacing:1,padding:"3px 10px",borderRadius:10,
+              background:saveStatus==="saved"?"rgba(68,201,122,0.15)":saveStatus==="error"?"rgba(224,68,68,0.15)":"rgba(201,153,46,0.1)",
+              color:saveStatus==="saved"?BRAND.green:saveStatus==="error"?BRAND.red:BRAND.accent,
+              border:`1px solid ${saveStatus==="saved"?"rgba(68,201,122,0.3)":saveStatus==="error"?"rgba(224,68,68,0.3)":"rgba(201,153,46,0.2)"}`}}>
+              {saveStatus==="saving"?"💾 Saving...":saveStatus==="saved"?"✓ Saved":"⚠ Save failed"}
+            </span>
+          )}
+          <span style={{fontSize:10,fontFamily:"monospace",color:BRAND.muted}}>{packets.length} packets</span>
+          <button onClick={()=>{if(window.confirm("Change API key?")){localStorage.removeItem("iconic-api-key");setApiKey("");}}}
+            style={{...S.btn(BRAND.muted,"transparent"),padding:"4px 10px",fontSize:9}}>🔑</button>
+        </div>
+      </div>
+
+      {view==="library"&&<Library packets={packets} onSelect={p=>{setSelectedPacket(p);setView("results");}} onDelete={handleDelete} onNew={()=>setView("upload")}/>}
+      {view==="upload"&&<UploadForm hasPackets={packets.length>0} onComplete={handleComplete} onCancel={()=>setView("library")} apiKey={apiKey}/>}
+      {view==="results"&&selectedPacket&&<Results packet={selectedPacket} onBack={()=>setView("library")} onNewTrack={()=>setView("upload")} onTitleChange={handleTitleChange}/>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

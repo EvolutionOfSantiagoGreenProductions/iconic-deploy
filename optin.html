@@ -1,0 +1,228 @@
+<title>iCONiCbyAESGP — Get Your Free Royalty Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Archivo:wght@300;400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07050a;
+  --surf:#0f0c12;
+  --panel:#110e15;
+  --border:#1e1720;
+  --gold1:#fff4c8;
+  --gold2:#d4a437;
+  --gold3:#8a5c14;
+  --accent:#c9992e;
+  --text:#f0e8d0;
+  --muted:#7a6a55;
+  --green:#44C97A;
+  --goldGrd:linear-gradient(135deg,#fff4c8 0%,#d4a437 55%,#8a5c14 100%);
+}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#07050a;--surf:#0f0c12;--panel:#110e15;--border:#1e1720;--text:#f0e8d0;--muted:#7a6a55;
+}}
+:root[data-theme="dark"]{--bg:#07050a;--surf:#0f0c12;--panel:#110e15;--border:#1e1720;--text:#f0e8d0;--muted:#7a6a55;color-scheme:dark}
+body{background:var(--bg);color:var(--text);font-family:'Archivo',system-ui,sans-serif;min-height:100%;line-height:1.6}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#0f0c12}
+::-webkit-scrollbar-thumb{background:#2a2030;border-radius:3px}
+
+/* ── Layout ── */
+.page{max-width:660px;margin:0 auto;padding:48px 24px 80px}
+.logo-row{display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:40px}
+.brand-name{font-family:'Cinzel',serif;font-size:15px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;background:var(--goldGrd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand-sub{font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:2px}
+
+/* ── Hero ── */
+.eyebrow{font-family:'Archivo',sans-serif;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:14px}
+.headline{font-family:'Cinzel',serif;font-size:clamp(26px,5vw,42px);font-weight:700;line-height:1.15;text-align:center;margin-bottom:18px}
+.headline span{background:var(--goldGrd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subhead{font-size:16px;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 36px;line-height:1.65}
+
+/* ── PDF Preview card ── */
+.pdf-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:28px 24px;display:flex;gap:22px;align-items:flex-start;margin-bottom:40px}
+.pdf-icon{flex-shrink:0;width:64px;height:80px;background:linear-gradient(135deg,#1a1520 0%,#0f0c12 100%);border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.pdf-icon-label{font-size:9px;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;font-weight:700}
+.pdf-icon-doc{font-size:22px;line-height:1}
+.pdf-info h3{font-family:'Cinzel',serif;font-size:15px;font-weight:600;margin-bottom:6px;color:var(--gold1)}
+.pdf-info p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ── Bullets ── */
+.bullet-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:40px}
+.bullet-list li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text)}
+.bullet-list li::before{content:'';display:block;width:18px;height:18px;flex-shrink:0;border-radius:50%;background:var(--goldGrd);margin-top:1px}
+.bullet-list strong{color:var(--gold1)}
+
+/* ── Form ── */
+.form-wrap{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:32px 28px;margin-bottom:32px}
+.form-title{font-family:'Cinzel',serif;font-size:16px;font-weight:600;margin-bottom:6px;text-align:center;color:var(--gold1)}
+.form-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px}
+
+/* ── Mailchimp embed reset ── */
+#mc_embed_signup{background:transparent!important;width:100%!important}
+#mc_embed_signup form{padding:0!important}
+#mc_embed_signup .mc-field-group{width:100%!important;margin-bottom:14px!important;padding-bottom:0!important}
+#mc_embed_signup label{color:var(--muted)!important;font-size:12px!important;letter-spacing:.08em!important;text-transform:uppercase!important;font-weight:500!important;margin-bottom:6px!important;display:block!important}
+#mc_embed_signup input.email,
+#mc_embed_signup input[type="text"]{
+  background:#0f0c12!important;border:1px solid #1e1720!important;border-radius:8px!important;
+  color:var(--text)!important;padding:12px 14px!important;font-size:14px!important;
+  font-family:'Archivo',sans-serif!important;width:100%!important;outline:none!important;
+  transition:border-color .15s!important;
+}
+#mc_embed_signup input.email:focus,
+#mc_embed_signup input[type="text"]:focus{border-color:#c9992e!important}
+#mc_embed_signup .button{
+  background:linear-gradient(135deg,#fff4c8 0%,#d4a437 55%,#8a5c14 100%)!important;
+  color:#07050a!important;font-family:'Cinzel',serif!important;font-weight:700!important;
+  font-size:14px!important;letter-spacing:.1em!important;text-transform:uppercase!important;
+  border:none!important;border-radius:8px!important;padding:14px 24px!important;
+  width:100%!important;cursor:pointer!important;margin-top:8px!important;
+  transition:opacity .15s!important;
+}
+#mc_embed_signup .button:hover{opacity:.9!important}
+#mc_embed_signup .response{color:var(--accent)!important;font-size:13px!important;margin-top:12px!important;text-align:center!important}
+
+/* ── Fallback manual form ── */
+.manual-form{display:flex;flex-direction:column;gap:14px}
+.manual-form label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;display:block;margin-bottom:5px}
+.manual-form input{background:#0f0c12;border:1px solid #1e1720;border-radius:8px;color:var(--text);padding:12px 14px;font-size:14px;font-family:'Archivo',sans-serif;width:100%;outline:none;transition:border-color .15s}
+.manual-form input:focus{border-color:var(--accent)}
+.manual-form .cta-btn{
+  background:var(--goldGrd);color:#07050a;font-family:'Cinzel',serif;font-weight:700;
+  font-size:14px;letter-spacing:.1em;text-transform:uppercase;border:none;border-radius:8px;
+  padding:15px 24px;width:100%;cursor:pointer;margin-top:6px;transition:opacity .15s
+}
+.manual-form .cta-btn:hover{opacity:.88}
+
+/* ── Privacy note ── */
+.privacy{font-size:11px;color:var(--muted);text-align:center;margin-top:14px}
+
+/* ── Social proof ── */
+.proof-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:48px}
+.proof-chip{background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:8px 18px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.proof-chip span{color:var(--accent);font-weight:600}
+
+/* ── Footer ── */
+.footer{text-align:center;font-size:11px;color:var(--muted);padding-top:32px;border-top:1px solid var(--border);margin-top:48px}
+.footer a{color:var(--accent);text-decoration:none}
+.divider{width:48px;height:1px;background:var(--goldGrd);margin:0 auto 40px;opacity:.4}
+
+/* ── Responsive ── */
+@media(max-width:500px){
+  .pdf-card{flex-direction:column}
+  .form-wrap{padding:24px 16px}
+  .proof-row{gap:8px}
+}
+</style>
+
+<!-- ── AE Monogram SVG ── -->
+<script>
+const AE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <circle cx="24" cy="24" r="22" stroke="url(#g1)" stroke-width="1.2"/>
+  <circle cx="24" cy="24" r="17" stroke="url(#g1)" stroke-width=".7" opacity=".45"/>
+  <text x="24" y="30" text-anchor="middle" font-family="Cinzel,serif" font-size="14" font-weight="700" fill="url(#g1)">AE</text>
+  <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#fff4c8"/>
+    <stop offset="55%" stop-color="#d4a437"/>
+    <stop offset="100%" stop-color="#8a5c14"/>
+  </linearGradient></defs>
+</svg>`;
+</script>
+
+<div class="page">
+
+  <!-- Logo -->
+  <div class="logo-row">
+    <div style="width:44px;height:44px" id="mono"></div>
+    <div>
+      <div class="brand-name">iCONiCbyAESGP</div>
+      <div class="brand-sub">An Evolution Of Santiago Green Production</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <p class="eyebrow">Free Download for Independent Producers</p>
+  <h1 class="headline">The <span>15 Royalties</span> You're Probably Not Collecting</h1>
+  <p class="subhead">Most producers leave thousands on the table every year. This free guide shows you exactly which royalty streams exist, which ones you qualify for right now, and how to start collecting.</p>
+
+  <div class="divider"></div>
+
+  <!-- PDF Preview -->
+  <div class="pdf-card">
+    <div class="pdf-icon">
+      <div class="pdf-icon-doc">📄</div>
+      <div class="pdf-icon-label">Free PDF</div>
+    </div>
+    <div class="pdf-info">
+      <h3>15 Missed Royalty Streams for Beat Producers</h3>
+      <p>ASCAP, BMI, The MLC, SoundExchange, Content ID, sync licensing, neighboring rights, and more — explained plainly, with action steps for each.</p>
+    </div>
+  </div>
+
+  <!-- Bullets -->
+  <ul class="bullet-list">
+    <li><strong>The MLC</strong> — Most producers don't know it exists. It collects mechanical royalties for digital streams directly.</li>
+    <li><strong>SoundExchange</strong> — Separate from your PRO. Covers satellite radio, internet radio, and streaming performance royalties.</li>
+    <li><strong>YouTube Content ID</strong> — Monetize every upload that uses your beat, even ones you didn't upload.</li>
+    <li><strong>Neighboring Rights</strong> — International royalties for master recordings, often unclaimed for years.</li>
+    <li><strong>Sync Licensing</strong> — TV, film, ads, and trailers. Step-by-step to submit placements legally.</li>
+  </ul>
+
+  <!-- Form -->
+  <div class="form-wrap">
+    <div class="form-title">Get the Free PDF Instantly</div>
+    <div class="form-sub">Drop your email — we'll send it right over, plus access to our free beat registration tool.</div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MAILCHIMP EMBED — replace this comment block with your
+         Mailchimp embedded form code from:
+         Audience → Signup Forms → Embedded Forms
+         (Classic embed, no CSS checked — styles are above)
+         ═══════════════════════════════════════════════════════════ -->
+
+    <!-- PLACEHOLDER FORM (remove when Mailchimp embed is pasted in) -->
+    <form class="manual-form" id="placeholder-form">
+      <div>
+        <label for="fname">First Name</label>
+        <input type="text" id="fname" placeholder="Santiago"/>
+      </div>
+      <div>
+        <label for="femail">Email Address</label>
+        <input type="email" id="femail" placeholder="you@yourdomain.com"/>
+      </div>
+      <button type="submit" class="cta-btn">Send Me the Free Guide →</button>
+      <div id="form-msg" style="display:none;color:#44C97A;text-align:center;font-size:13px;margin-top:10px"></div>
+    </form>
+  </div>
+
+  <p class="privacy">🔒 No spam. Unsubscribe any time. Your email is used only to deliver the guide and relevant updates from iCONiCbyAESGP.</p>
+
+  <!-- Social proof chips -->
+  <div class="proof-row" style="margin-top:32px">
+    <div class="proof-chip">📝 <span>ASCAP</span> Registered</div>
+    <div class="proof-chip">🎵 <span>The MLC</span> Member</div>
+    <div class="proof-chip">💻 <span>DistroKid</span> Distribution</div>
+    <div class="proof-chip">▶️ <span>YouTube</span> Content ID</div>
+    <div class="proof-chip">📡 <span>SoundExchange</span> Enrolled</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>© 2026 iCONiCbyAESGP · An Evolution Of Santiago Green Production</p>
+    <p style="margin-top:6px"><a href="https://iCONiCbyAESGP.com/members/">Members Area</a> · <a href="mailto:EvolveIconic@iCONiCbyAESGP.com">EvolveIconic@iCONiCbyAESGP.com</a></p>
+  </div>
+</div>
+
+<script>
+document.getElementById('mono').innerHTML = AE_SVG;
+
+// Placeholder form UX only — replace entire form block with Mailchimp embed
+document.getElementById('placeholder-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const msg = document.getElementById('form-msg');
+  msg.style.display = 'block';
+  msg.textContent = '✅ Got it! Check your inbox for the free guide.';
+  this.querySelector('button').disabled = true;
+  this.querySelector('button').style.opacity = '.5';
+});
+</script>
