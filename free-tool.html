@@ -210,7 +210,7 @@ function TitleEditor({current,bpm,keyVal,genre,year,onSave,onCancel}){
     <div style={{background:"rgba(201,153,46,0.05)",border:`1px solid rgba(201,153,46,0.3)`,borderRadius:8,padding:"14px",marginBottom:4}}>
       <div style={{fontSize:10,color:BRAND.accent,fontFamily:"monospace",letterSpacing:2,textTransform:"uppercase",marginBottom:10}}>Edit Track Title</div>
       <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1.5fr",gap:8,marginBottom:10}}>
-        {[{label:"🔥 Beat Name",val:beatName,set:setBeatName,ph:"e.g. Midnight Hustle"},{label:"BPM",val:bpmV,set:setBpmV,ph:"e.g. 140"},{label:"Key",val:keyV,set:setKeyV,ph:"e.g. Gm"},{label:"Genre",val:genreV,set:setGenreV,ph:"e.g. Trap"}].map(f=>(
+        {[{label:"Beat Name",val:beatName,set:setBeatName,ph:"e.g. Midnight Hustle"},{label:"BPM",val:bpmV,set:setBpmV,ph:"e.g. 140"},{label:"Key",val:keyV,set:setKeyV,ph:"e.g. Gm"},{label:"Genre",val:genreV,set:setGenreV,ph:"e.g. Trap"}].map(f=>(
           <div key={f.label}>
             <div style={{fontSize:9,color:BRAND.muted,fontFamily:"monospace",letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>{f.label}</div>
             <input value={f.val} onChange={e=>f.set(e.target.value)} placeholder={f.ph} style={fi}/>
