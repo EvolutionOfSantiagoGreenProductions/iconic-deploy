@@ -204,7 +204,7 @@ function TitleEditor({current,bpm,keyVal,genre,year,onSave,onCancel}){
   const[bpmV,setBpmV]=useState(bpm&&bpm!=="???"?bpm:"");
   const[keyV,setKeyV]=useState(keyVal&&keyVal!=="???"?keyVal:"");
   const[genreV,setGenreV]=useState(genre&&genre!=="Hip Hop"?genre:"");
-  const preview=`🔥 ${beatName||"BEAT NAME"} | ${bpmV||"BPM"} BPM | ${keyV||"KEY"} | ${genreV||"Genre"} Type Beat ${year}`;
+  const preview=`${beatName||"BEAT NAME"} | ${bpmV||"BPM"} BPM | ${keyV||"KEY"} | ${genreV||"Genre"} Type Beat ${year}`;
   const fi={background:BRAND.bg,border:`1px solid ${BRAND.border2}`,borderRadius:6,color:BRAND.accentLt,padding:"7px 10px",fontSize:12,outline:"none",fontFamily:"inherit",width:"100%",boxSizing:"border-box"};
   return(
     <div style={{background:"rgba(201,153,46,0.05)",border:`1px solid rgba(201,153,46,0.3)`,borderRadius:8,padding:"14px",marginBottom:4}}>
