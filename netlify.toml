@@ -25,6 +25,17 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# ── Members hub (iCONiC Royalty) ─────────────────────────────────────────
+[[redirects]]
+  from   = "/members"
+  to     = "/members-hub.html"
+  status = 200
+
+[[redirects]]
+  from   = "/members/"
+  to     = "/members-hub.html"
+  status = 200
+
 # ── Friendly 404 ─────────────────────────────────────────────────────────
 [[redirects]]
   from   = "/*"
